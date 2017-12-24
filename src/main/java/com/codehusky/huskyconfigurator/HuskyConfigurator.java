@@ -1,0 +1,131 @@
+package com.codehusky.huskyconfigurator;
+
+import com.corundumstudio.socketio.Configuration;
+import com.corundumstudio.socketio.SocketIOServer;
+import com.corundumstudio.socketio.listener.DataListener;
+import com.google.common.io.ByteStreams;
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import ninja.leaping.configurate.json.JSONConfigurationLoader;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
+
+import java.awt.*;
+import java.io.*;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+public class HuskyConfigurator {
+    private static boolean live = true;
+    private static boolean connectionMade = false;
+    private static long startTime = System.currentTimeMillis();
+    private static ConfigurationLoader<CommentedConfigurationNode> loader = null;
+    public static void main(String[] args) throws InterruptedException {
+
+        Path currentDir = Paths.get(".").toAbsolutePath().normalize();
+        if(currentDir.getName(currentDir.getNameCount()-1).toString().equals("mods")){
+            File potentialConf = new File(Paths.get("../config/huskycrates/huskycrates.conf").toString());
+            if(potentialConf.exists()){
+                loader = HoconConfigurationLoader.builder().setFile(potentialConf).build();
+            }
+        }
+        if(loader == null){
+            loader = HoconConfigurationLoader.builder().setPath(Paths.get("huskycrates.conf")).build();
+        }
+
+        //loader.load();
+        JSONConfigurationLoader jsonloader = JSONConfigurationLoader.builder().build();
+        StringWriter writer = new StringWriter();
+        try {
+            jsonloader.saveInternal(loader.load(), writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // = HoconConfigurationLoader.builder().setPath(conf.toPath()).build();
+
+        Configuration config = new Configuration();
+        config.setHostname("localhost");
+        config.setPort(46544);
+
+        SocketIOServer server = new SocketIOServer(config);
+        server.addConnectListener(socketIOClient -> {
+            socketIOClient.sendEvent("configData",writer.toString());
+            connectionMade = true;
+        });
+
+        server.addDisconnectListener(socketIOClient -> live = false);
+
+
+
+        server.start();
+
+        HttpServer httpServ = null;
+        try {
+            httpServ = HttpServer.create(new InetSocketAddress(46545), 0);
+
+            httpServ.createContext("/", new HttpHandler() {
+                @Override
+                public void handle(HttpExchange ex) throws IOException {
+                    URI uri = ex.getRequestURI();
+                    String name = new File(uri.getPath()).getName();
+                    InputStream path = null;
+
+                    if(!name.equals("")) {
+                        path = this.getClass().getClassLoader().getResourceAsStream("static/" + name);
+                    } else {
+                        path = this.getClass().getClassLoader().getResourceAsStream("static/index.html");
+                    }
+
+                    Headers h = ex.getResponseHeaders();
+                    // Could be more clever about the content type based on the filename here.
+                    //h.add("Content-Type", "text/html");
+
+                    OutputStream out = ex.getResponseBody();
+                    byte[] data = ByteStreams.toByteArray(path);
+                    if (data.length > 0) {
+                        ex.sendResponseHeaders(200, data.length);
+                        out.write(data);
+                    } else {
+                        System.err.println("File not found: " + name);
+
+                        ex.sendResponseHeaders(404, 0);
+                        out.write("404 File not found.".getBytes());
+                    }
+
+                    out.close();
+                }
+            });
+
+            httpServ.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(Desktop.isDesktopSupported()){
+            try {
+                Desktop.getDesktop().browse(new URI("http://localhost:46545"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        while(live){
+            // woo
+            if(!connectionMade) {
+                if (System.currentTimeMillis() > startTime + 1000 * 10) { //10 seconds
+                    live = false;
+                    System.out.println("Connection timed out.");
+                }
+            }
+            Thread.sleep(1);
+        }
+        server.stop();
+        httpServ.stop(1);
+    }
+
+}

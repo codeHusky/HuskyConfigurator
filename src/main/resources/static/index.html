@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" href="../../../../favicon.ico">
+        <title>Dashboard Template for Bootstrap</title>
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+        <!-- Custom styles for this template -->
+        <link href="dashboard.css" rel="stylesheet"> </head>
+
+    <body>
+        <header>
+            <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark"> <a class="navbar-brand" href="#">HuskyConfigurator</a> <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+                <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+                    <ul class="navbar-nav mr-auto" id="crates">
+                        
+                    </ul>
+                    <div class="mt-2 mt-md-0">
+                        <a class="nav-item nav-link btn btn-success" style="color:white">+</a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <div class="container-fluid">
+            <div class="row">
+                <nav class="col-sm-3 col-md-2 d-none d-sm-block bg-light sidebar">
+                    <ul class="nav nav-pills flex-column">
+                        <li class="nav-item"> <a class="nav-link nav-title disabled">Crate</a> </li>
+                        <li class="nav-item"> <a class="nav-link" id="crateOverview-button" href="javascript:triggerPage('crateOverview');">Overview</a> </li>
+                        <li class="nav-item"> <a class="nav-link" id="crateItems-button" href="javascript:triggerPage('crateItems');">Items</a> </li>
+                        <li class="nav-item"> <a class="nav-link" id="crateOptions-button" href="javascript:triggerPage('crateOptions');">Options</a> </li>
+                        <li class="nav-item"> <a class="nav-link" id="crateSpinnerOptions-button" href="javascript:triggerPage('crateSpinnerOptions');">Spinner Options</a> </li>
+                        <li class="nav-item"> <a class="nav-link" id="crateSpinnerOptions-button" href="javascript:triggerPage('crateLang');">Lang</a> </li>
+                    </ul>
+                    <ul class="nav nav-pills flex-column">
+                        <li class="nav-item"> <a class="nav-link nav-title disabled">Global</a> </li>
+                        <li class="nav-item"> <a class="nav-link" href="javascript:triggerPage('globalLang')">Lang</a> </li>
+                    </ul>
+                </nav>
+                
+                <main role="main" class="col-sm-9 ml-sm-auto col-md-10 pt-3">
+                    <div id="default">
+                        <h2>You must select a crate to continue.</h2>
+                        <!--h2>Section title</h2>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Header</th>
+                                        <th>Header</th>
+                                        <th>Header</th>
+                                        <th>Header</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1,001</td>
+                                        <td>Lorem</td>
+                                        <td>ipsum</td>
+                                        <td>dolor</td>
+                                        <td>sit</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div-->
+                    </div>
+                    <div id="crateOverview">
+                        <h1>Overview</h1>
+                        <div class="row">
+                            <div class="col-4">
+                                <h2>Display Name</h2>
+                                <input id="displayname" type="text" value="ree" class="form-control">
+                            </div>
+                            <div class="col-4">
+                                <h2>Items</h2>
+                                <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <td><b>Item Count</b></td>
+                                            <td>n/a</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Item Weight Sum</b></td>
+                                            <td>n/a</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Average Chance</b></td>
+                                            <td>n/a</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <h2>Type</h2>
+                                <select class="form-control">
+                                    <option>Spinner</option>
+                                    <option>Roulette</option>
+                                    <option>Instant</option>
+                                    <option>Simple</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="crateItems" style="display:none">
+                        <h1>Crate Items</h1>
+                    </div>
+                    <div id="crateOptions" style="display:none">
+                        <h1>Crate Options</h1>
+                    </div>
+                    <div id="crateSpinnerOptions" style="display:none">
+                        <h1>Crate Spinner Options</h1>
+                    </div>
+                    <div id="globalLang" style="display:none">
+                        <h1>Global Lang Settings</h1>
+                    </div>
+                </main>
+            </div>
+        </div>
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+        <script src="script.js">
+
+        </script>
+    </body>
+</html>
