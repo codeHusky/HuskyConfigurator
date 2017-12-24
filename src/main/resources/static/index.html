@@ -18,100 +18,115 @@
               <span class="navbar-toggler-icon"></span>
             </button>
                 <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-                    <ul class="navbar-nav mr-auto" id="crates">
-                        
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <div class="input-group">
+                                <select class="form-control" id="crates" style="display:none">
+                                  <option selected disabled>Default select</option>
+                                </select>
+                                <span class="input-group-btn">
+                                    <button id="newCrate" class="btn btn-success" type="button">New Crate</button>
+                                </span>
+                            </div>
+                        </li>
                     </ul>
                     <div class="mt-2 mt-md-0">
-                        <a class="nav-item nav-link btn btn-success" style="color:white">+</a>
+                        <a id="save" class="nav-item nav-link btn btn-success" style="color:white">Save</a>
                     </div>
                 </div>
             </nav>
         </header>
         <div class="container-fluid">
             <div class="row">
-                <nav class="col-sm-3 col-md-2 d-none d-sm-block bg-light sidebar">
+                <nav class="col-sm-3 col-md-2 col-lg-1 d-none d-sm-block bg-light sidebar">
                     <ul class="nav nav-pills flex-column">
                         <li class="nav-item"> <a class="nav-link nav-title disabled">Crate</a> </li>
                         <li class="nav-item"> <a class="nav-link" id="crateOverview-button" href="javascript:triggerPage('crateOverview');">Overview</a> </li>
                         <li class="nav-item"> <a class="nav-link" id="crateItems-button" href="javascript:triggerPage('crateItems');">Items</a> </li>
                         <li class="nav-item"> <a class="nav-link" id="crateOptions-button" href="javascript:triggerPage('crateOptions');">Options</a> </li>
                         <li class="nav-item"> <a class="nav-link" id="crateSpinnerOptions-button" href="javascript:triggerPage('crateSpinnerOptions');">Spinner Options</a> </li>
-                        <li class="nav-item"> <a class="nav-link" id="crateSpinnerOptions-button" href="javascript:triggerPage('crateLang');">Lang</a> </li>
+                        <li class="nav-item"> <a class="nav-link" id="crateLang-button" href="javascript:triggerPage('crateLang');">Lang</a> </li>
                     </ul>
                     <ul class="nav nav-pills flex-column">
                         <li class="nav-item"> <a class="nav-link nav-title disabled">Global</a> </li>
-                        <li class="nav-item"> <a class="nav-link" href="javascript:triggerPage('globalLang')">Lang</a> </li>
+                        <li class="nav-item"> <a class="nav-link" id="globalLang-button" href="javascript:triggerPage('globalLang')">Lang</a> </li>
                     </ul>
                 </nav>
                 
-                <main role="main" class="col-sm-9 ml-sm-auto col-md-10 pt-3">
-                    <div id="default">
-                        <h2>You must select a crate to continue.</h2>
-                        <!--h2>Section title</h2>
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Header</th>
-                                        <th>Header</th>
-                                        <th>Header</th>
-                                        <th>Header</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1,001</td>
-                                        <td>Lorem</td>
-                                        <td>ipsum</td>
-                                        <td>dolor</td>
-                                        <td>sit</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div-->
-                    </div>
+                <main role="main" class="col-sm-9 ml-sm-auto col-md-10 col-lg-11 pt-3">
                     <div id="crateOverview">
                         <h1>Overview</h1>
                         <div class="row">
                             <div class="col-4">
                                 <h2>Display Name</h2>
                                 <input id="displayname" type="text" value="ree" class="form-control">
+                                <h2>Crate ID</h2>
+                                <input id="crateID" type="text" value="??" class="form-control">
                             </div>
                             <div class="col-4">
                                 <h2>Items</h2>
                                 <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <tbody>
-                                        <tr>
-                                            <td><b>Item Count</b></td>
-                                            <td>n/a</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Item Weight Sum</b></td>
-                                            <td>n/a</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Average Chance</b></td>
-                                            <td>n/a</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                    <table class="table table-striped">
+                                        <tbody>
+                                            <tr>
+                                                <td><b>Item Count</b></td>
+                                                <td id="itemCount">n/a</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Item Weight Sum</b></td>
+                                                <td id="itemWeightSum">n/a</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Average Chance</b></td>
+                                                <td id="avgChance">n/a</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <h2>Type</h2>
-                                <select class="form-control">
-                                    <option>Spinner</option>
-                                    <option>Roulette</option>
-                                    <option>Instant</option>
-                                    <option>Simple</option>
+                                <select id="cratetype" class="form-control">
+                                    <option value="spinner">Spinner</option>
+                                    <option value="roulette">Roulette</option>
+                                    <option value="instant">Instant</option>
+                                    <option value="simple">Simple</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div id="crateItems" style="display:none">
                         <h1>Crate Items</h1>
+                        <center><a id="newItem" class="btn btn-success" style="color:white">New Item</a></center>
+                        <br>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <td></td>
+                                        <td><b>Name</b></td>
+                                        <td><b>Item ID</b></td>
+                                        <td><b>Damage</b></td>
+                                        <td><b>Count</b></td>
+                                        <td><b title="Lore, Enchantments, NBT Data">Meta</b></td>
+                                        <td><b>Weight</b></td>
+                                        <td><b>Rewards</b></td>
+                                    </tr>
+                                </thead>
+                                <tbody id="items">
+                                    <tr>
+                                        <td><a class="btn btn-danger" style="color:white">&times;</a></td>
+                                        <td><input type="text" placeholder="Name" class="form-control"></td>
+                                        <td><input type="text" placeholder="Item ID" class="form-control"></td>
+                                        <td><input type="text" placeholder="Damage" class="form-control"></td>
+                                        <td><input type="text" placeholder="Count" class="form-control"></td>
+                                        <td><a class="btn btn-secondary" style="color:white">Edit</a></td>
+                                        <td><input type="text" placeholder="Weight" class="form-control"></td>
+                                        <td><a class="nav-item nav-link btn btn-primary" style="color:white">Edit (<span>n/a</span>)</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div id="crateOptions" style="display:none">
                         <h1>Crate Options</h1>
@@ -119,20 +134,18 @@
                     <div id="crateSpinnerOptions" style="display:none">
                         <h1>Crate Spinner Options</h1>
                     </div>
+                    <div id="crateLang" style="display:none">
+                        <h1>Crate Lang Settings</h1>
+                    </div>
                     <div id="globalLang" style="display:none">
                         <h1>Global Lang Settings</h1>
                     </div>
                 </main>
             </div>
         </div>
-        <!-- Bootstrap core JavaScript
-        ================================================== -->
-        <!-- Placed at the end of the document so the pages load faster -->
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
-        <script src="script.js">
-
-        </script>
+        <script src="script.js"></script>
     </body>
 </html>

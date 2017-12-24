@@ -10,29 +10,136 @@ socket.on("configData",function(data){
     updateUI();
 })
 var currentCrate = null;
-var currentPage = "default";
-var pages = ["default","crateOverview","crateItems","crateOptions","crateSpinnerOptions"];
+var currentPage = "crateOverview";
+var pages = ["crateOverview","crateItems","crateOptions","crateSpinnerOptions","crateLang","globalLang"];
+$("#crates").change(function() {
+    triggerCrate($(this).val());
+})
+if(config != null){
+    updateUI();
+}
+$("#newCrate").click(function() {
+
+})
 function updateUI() {
-    $("#crates").html("");
-    for(crate in config.crates){
-        $("#crates").append('<li class="nav-item"> <a class="nav-link" id="' + crate + '-button" href="javascript:triggerCrate(\'' + crate + '\')">' + colorCodeStrip(config.crates[crate].name) + '</a></li>')
+    console.log(currentCrate)
+    if(config && currentCrate == null){
+        if(config.crates){
+            for(crate in config.crates){
+                triggerCrate(crate);
+                return;
+            }
+        }
     }
-    if(currentCrate){
-        hidePages();
-        var crate = config.crates[currentCrate];
-        switch(currentPage){
-            case "crateOverview":
-                $("#displayname").val(crate.name).change(function(){
-                    config.crates[currentCrate].name = $(this).val();
+    $("#crates").show();
+    $("#crates").html("");
+    
+    for(crate in config.crates){
+        //$("#crates").append('<li class="nav-item"> <a class="nav-link ' + ((crate == currentCrate)?'active':'') + '" id="' + crate + '-button" href="javascript:triggerCrate(\'' + crate + '\')">' + colorCodeStrip(config.crates[crate].name) + '</a></li>')
+        $("#crates").append('<option ' + ((currentCrate == crate)?"selected":"") + ' value="' + crate + '">' + colorCodeStrip(config.crates[crate].name) + "</option>")
+    }
+    hidePages();
+    if(!currentCrate) return;
+    var crate = config.crates[currentCrate];
+    switch(currentPage){
+        case "crateOverview":
+            $("#displayname").val(crate.name).change(function(){
+                config.crates[currentCrate].name = $(this).val();
+                updateUI();
+            });
+            $("#crateID").val(currentCrate).change(function() {
+                var old = JSON.parse(JSON.stringify(config.crates[currentCrate]));
+                delete config.crates[currentCrate];
+                currentCrate = $(this).val();
+                config.crates[currentCrate] = old;
+                updateUI();
+            })
+            $("#cratetype").val(crate.type.toLowerCase()).change(function() {
+                config.crates[currentCrate].type = $(this).val();
+            })
+            $("#itemCount").text(crate.items.length);
+            var weightSum = 0;
+            for(var i = 0; i < crate.items.length; i++){
+                var item = crate.items[i];
+                weightSum += item.huskydata.weight;
+            }
+            $("#itemWeightSum").text(weightSum);
+            $("#avgChance").text(100*((weightSum/crate.items.length)/weightSum) + "%").attr("title","Actual Weight: " + (weightSum/crate.items.length));
+        break;
+        case "crateItems":
+            $("#items").html("");
+            $("#newItem").unbind()
+            $("#newItem").click(function() {
+                config.crates[currentCrate].items.push({
+                    id:"minecraft:dirt",
+                    name:"New Item",
+                    count:1,
+                    huskydata:{
+                        rewards:[
+                            {type:"item"}
+                        ],
+                        weight:1
+                    }
+                })
+                updateUI();
+            })
+            var weightSum = 0;
+            for(var i = 0; i < crate.items.length; i++){
+                var item = crate.items[i];
+                weightSum += item.huskydata.weight;
+            }
+            for(id in crate.items){
+                var prefix = "item-" + id + "-";
+                var del = prefix + "delete";
+                var name = prefix + "name";
+                var itemID = prefix + "itemID";
+                var damage = prefix + "damage";
+                var count = prefix + "count";
+                var meta = prefix + "meta";
+                var weight = prefix + "weight";
+                var rewards = prefix + "rewards";
+                var item = crate.items[id];
+                $("#items").append('<tr id="item-' + id + '"><td><a id="'+ del +'" class="btn btn-danger" style="color:white">&times;</a></td><td><input type="text" placeholder="Name" value="' + item.name + '" class="form-control" id="'+ name +'"></td><td><input type="text" placeholder="Item ID" value="' + item.id + '" class="form-control" id="'+ itemID +'"></td><td><input type="text" placeholder="Damage" value="' + ((item.damage)?item.damage:"0") + '" class="form-control" id="'+ damage +'"></td><td><input type="text" placeholder="Count" value="' + ((item.count)?item.count:"1") + '" class="form-control" id="'+ count +'"></td><td><a class="btn btn-secondary" style="color:white" id="'+ meta +'">Edit</a></td><td><div class="input-group"><input type="text" value="' + item.huskydata.weight + '" placeholder="Weight" class="form-control" id="'+ weight +'"><span class="input-group-addon">/ ' + weightSum +'</span></div></td><td><a class="nav-item nav-link btn btn-primary" style="color:white" id="'+ rewards +'">Edit (' + item.huskydata.rewards.length + ')</a></td></tr>')
+                $("#" + del).click(function(){
+                    var id = parseFloat(this.id.split("-")[1]);
+                    config.crates[currentCrate].items.splice(id,1);
                     updateUI();
                 })
-            break;
-
-        }
-        $("#" + currentPage).show();
-    }else{
+                $("#" + name).change(function() {
+                    var id = parseFloat(this.id.split("-")[1]);
+                    config.crates[currentCrate].items[id].name = $(this).val();
+                    updateUI();
+                })
+                $("#" + damage).change(function() {
+                    var id = parseFloat(this.id.split("-")[1]);
+                    config.crates[currentCrate].items[id].damage = parseFloat($(this).val());
+                    updateUI();
+                })
+                $("#" + count).change(function() {
+                    var id = parseFloat(this.id.split("-")[1]);
+                    config.crates[currentCrate].items[id].count = parseFloat($(this).val());
+                    updateUI();
+                })
+                $("#" + meta).click(function(){
+                    var id = parseFloat(this.id.split("-")[1]);
+                    //config.crates[currentCrate].items.splice(id,1);
+                    updateUI();
+                })
+                $("#" + weight).change(function() {
+                    var id = parseFloat(this.id.split("-")[1]);
+                    config.crates[currentCrate].items[id].huskydata.weight = parseFloat($(this).val());
+                    updateUI();
+                })
+                $("#" + rewards).click(function(){
+                    var id = parseFloat(this.id.split("-")[1]);
+                    //config.crates[currentCrate].items.splice(id,1);
+                    updateUI();
+                })
+            }
+        break;
 
     }
+    $("#" + currentPage).show();
 }
 function colorCodeStrip(txt){
     return txt.replace(/&[0-9A-FK-OR]/ig,"");
@@ -54,7 +161,7 @@ function deactivateSidebar() {
 }
 function triggerPage(page){
     if(!currentCrate){
-        currentPage = "default";
+        currentPage = "crateOverview";
         return;
     }
     deactivateSidebar();
@@ -65,5 +172,5 @@ function triggerPage(page){
 function triggerCrate(crate){
     $("#" + crate + "-button").addClass("active");
     currentCrate = crate;
-    triggerPage("crateOverview");
+    updateUI();
 }
