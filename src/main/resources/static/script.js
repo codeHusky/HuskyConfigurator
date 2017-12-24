@@ -19,10 +19,58 @@ if(config != null){
     updateUI();
 }
 $("#newCrate").click(function() {
-
+    $("#newCrateModal").modal('show')
 })
+function createNewCrate() {
+    var name = $("#newCrateName").val();
+    var id = $("#newCrateID").val();
+    var type = $("#newCrateType").val();
+    var err = false;
+    if(name.length == 0){
+        err = true;
+        $("#newCrateName").addClass("is-invalid");
+        $("#newCrateNameInvalid").text("You must enter a name.")
+        $("#newCrateNameInvalid").show();
+    }else{
+        $("#newCrateName").removeClass("is-invalid");
+        $("#newCrateNameInvalid").hide();
+    }
+    if(id.length == 0 || config.crates.hasOwnProperty(id)){
+        err = true;
+        $("#newCrateID").addClass("is-invalid");
+        if(config.crates.hasOwnProperty(id) && id.length > 0){
+            $("#newCrateIDInvalid").text("A crate with that ID already exists!")
+        }else{
+            $("#newCrateIDInvalid").text("You must enter a Crate ID.")
+        }
+        $("#newCrateIDInvalid").show();
+    }else{
+        $("#newCrateID").removeClass("is-invalid");
+        $("#newCrateIDInvalid").hide();
+    }
+    if(type == null){
+        err = true;
+        $("#newCrateType").addClass("is-invalid");
+        $("#newCrateTypeInvalid").text("You must select a Crate Type.")
+        $("#newCrateTypeInvalid").show();
+    }else{
+        $("#newCrateType").removeClass("is-invalid");
+        $("#newCrateTypeInvalid").hide();
+    }
+
+    if(!err){
+        config.crates[id] = {
+            name:name,
+            options:{},
+            spinnerOptions:{},
+            type:type,
+            items:[]
+        }
+        triggerCrate(id);
+        $("#newCrateModal").modal('hide');
+    }
+}
 function updateUI() {
-    console.log(currentCrate)
     if(config && currentCrate == null){
         if(config.crates){
             for(crate in config.crates){
@@ -31,12 +79,21 @@ function updateUI() {
             }
         }
     }
+    if(config.crates[currentCrate].type.toLowerCase() != "spinner"){
+        $("#crateSpinnerOptions-button").addClass("disabled");
+        if(currentPage == "crateSpinnerOptions"){
+            triggerPage("crateOverview");
+            return;
+        }
+    }else{
+        $("#crateSpinnerOptions-button").removeClass("disabled");
+    }
     $("#crates").show();
     $("#crates").html("");
     
     for(crate in config.crates){
         //$("#crates").append('<li class="nav-item"> <a class="nav-link ' + ((crate == currentCrate)?'active':'') + '" id="' + crate + '-button" href="javascript:triggerCrate(\'' + crate + '\')">' + colorCodeStrip(config.crates[crate].name) + '</a></li>')
-        $("#crates").append('<option ' + ((currentCrate == crate)?"selected":"") + ' value="' + crate + '">' + colorCodeStrip(config.crates[crate].name) + "</option>")
+        $("#crates").append('<option ' + ((currentCrate == crate)?"selected":"") + ' value="' + crate + '">' + colorCodeStrip(config.crates[crate].name) + " (" + crate + ")</option>")
     }
     hidePages();
     if(!currentCrate) return;
