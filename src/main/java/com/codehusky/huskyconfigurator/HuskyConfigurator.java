@@ -89,7 +89,7 @@ public class HuskyConfigurator {
                     OutputStream out = ex.getResponseBody();
                     byte[] data = ByteStreams.toByteArray(path);
                     if (data.length > 0) {
-                        ex.sendResponseHeaders(200, data.length);
+                        ex.sendResponseHeaders(200, 0);
                         out.write(data);
                     } else {
                         System.err.println("File not found: " + name);
@@ -106,11 +106,18 @@ public class HuskyConfigurator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if(Desktop.isDesktopSupported()){
+        if (Desktop.isDesktopSupported()) {
             try {
                 Desktop.getDesktop().browse(new URI("http://localhost:46545"));
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }else {
+            try {
+                JFrameJunk.main();
+            } catch (Exception eek) {
+                eek.printStackTrace();
+
             }
         }
 

@@ -113,6 +113,7 @@ function updateUI() {
             })
             $("#cratetype").val(crate.type.toLowerCase()).change(function() {
                 config.crates[currentCrate].type = $(this).val();
+                updateUI();
             })
             $("#itemCount").text(crate.items.length);
             var weightSum = 0;
@@ -194,10 +195,74 @@ function updateUI() {
                 })
             }
         break;
-
+        case "crateOptions":
+            if(!config.crates[currentCrate].options){
+                config.crates[currentCrate].options = {}
+            }
+            if(!config.crates[currentCrate].options.particle1){
+                config.crates[currentCrate].options.particle1 = {};
+            }
+            if(!config.crates[currentCrate].options.particle2){
+                config.crates[currentCrate].options.particle2 = {};
+            }
+            if(!config.crates[currentCrate].options.particle1.color){
+                config.crates[currentCrate].options.particle1.color=[100,100,100];
+            }
+            if(!config.crates[currentCrate].options.particle2.color){
+                config.crates[currentCrate].options.particle2.color=[255,0,0];
+            }
+            $("#part-1-color").css("background-color","#" + rgbToHex(
+                crate.options.particle1.color[0],
+                crate.options.particle1.color[1],
+                crate.options.particle1.color[2]
+            ))
+            $("#part-1-r").val(crate.options.particle1.color[0]).change(function() {
+                config.crates[currentCrate].options.particle1.color[0] = $(this).val();
+                updateUI();
+            })
+            $("#part-1-g").val(crate.options.particle1.color[1]).change(function() {
+                config.crates[currentCrate].options.particle1.color[1] = $(this).val();
+                updateUI();
+            })
+            $("#part-1-b").val(crate.options.particle1.color[2]).change(function() {
+                config.crates[currentCrate].options.particle1.color[2] = $(this).val();
+                updateUI();
+            })
+            $("#part-2-color").css("background-color","#" + rgbToHex(
+                crate.options.particle2.color[0],
+                crate.options.particle2.color[1],
+                crate.options.particle2.color[2]
+            ))
+            $("#part-2-r").val(crate.options.particle2.color[0]).change(function() {
+                config.crates[currentCrate].options.particle2.color[0] = $(this).val();
+                updateUI();
+            })
+            $("#part-2-g").val(crate.options.particle2.color[1]).change(function() {
+                config.crates[currentCrate].options.particle2.color[1] = $(this).val();
+                updateUI();
+            })
+            $("#part-2-b").val(crate.options.particle2.color[2]).change(function() {
+                config.crates[currentCrate].options.particle2.color[2] = $(this).val();
+                updateUI();
+            })
+            
+        break;
     }
     $("#" + currentPage).show();
 }
+var hexPart = function (rgb) { 
+  var hex = Number(rgb).toString(16);
+  if (hex.length < 2) {
+       hex = "0" + hex;
+  }
+  return hex;
+};
+var rgbToHex = function(r,g,b) {   
+  var red = hexPart(r);
+  var green = hexPart(g);
+  var blue = hexPart(b);
+  return red+green+blue;
+};
 function colorCodeStrip(txt){
     return txt.replace(/&[0-9A-FK-OR]/ig,"");
 }

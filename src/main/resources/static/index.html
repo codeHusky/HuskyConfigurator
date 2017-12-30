@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>HuskyConfigurator</title>
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
-    <link rel="stytesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.1/css/bootstrap-colorpicker.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css">
     <!-- Custom styles for this template -->
     <link href="dashboard.css" rel="stylesheet"> </head>
 
@@ -177,23 +176,90 @@
                 </div>
                 <div id="crateOptions" style="display:none">
                     <h1>Crate Options</h1>
+                    <div class="row">
+                    	<div class="col-4">
+                    		<h2>Free Crate</h2>
+                    		
+                    		<div class="form-group mb-3">
+                    		<label for="cooldown-group">Usage Cooldown</label>
+                    		<div id="cooldown-group" class="input-group input-group-sm mb-1">
+                    		  
+							  <input id="cooldown" type="number" min="0" class="form-control">
+							  <div class="input-group-append">
+							    <span class="input-group-text">Seconds</span>
+							  </div>
+							</div>
+							</div>
+							<button type="button" class="btn btn-success btn-block mb-3">Enabled</button>
+                    	</div>
+                    	<div class="col-4">
+                    		<h2>Particle 1</h2>
+                    		<div class="progress mb-3">
+								<div class="progress-bar" id="part-1-color" role="progressbar" style="width: 100%"></div>
+							</div>
+							<div class="input-group input-group-sm mb-1">
+							  <div class="input-group-prepend">
+							    <span class="input-group-text">Red</span>
+							  </div>
+							  <input type="number" id="part-1-r" min="0" max="255" class="form-control">
+							</div>
+							<div class="input-group input-group-sm mb-1">
+							  <div class="input-group-prepend">
+							    <span class="input-group-text">Green</span>
+							  </div>
+							  <input type="number" id="part-1-g" min="0" max="255" class="form-control">
+							</div>
+							<div class="input-group input-group-sm mb-3">
+							  <div class="input-group-prepend">
+							    <span class="input-group-text">Blue</span>
+							  </div>
+							  <input type="number" id="part-1-b" min="0" max="255" class="form-control">
+							</div>
+                    	</div>
+                    	<div class="col-4">
+                    		<h2>Particle 2</h2>
+                    		<div class="progress mb-3">
+								<div class="progress-bar" id="part-2-color" role="progressbar" style="width: 100%"></div>
+							</div>
+							<div class="input-group input-group-sm mb-1">
+							  <div class="input-group-prepend">
+							    <span class="input-group-text">Red</span>
+							  </div>
+							  <input type="number" id="part-2-r" min="0" max="255" class="form-control">
+							</div>
+							<div class="input-group input-group-sm mb-1">
+							  <div class="input-group-prepend">
+							    <span class="input-group-text">Green</span>
+							  </div>
+							  <input type="number" id="part-2-g" min="0" max="255" class="form-control">
+							</div>
+							<div class="input-group input-group-sm mb-3">
+							  <div class="input-group-prepend">
+							    <span class="input-group-text">Blue</span>
+							  </div>
+							  <input type="number" id="part-2-b" min="0" max="255" class="form-control">
+							</div>
+                    	</div>
+                    	<div class="col-4">
+                    		<h2>Crate Block</h2>
+                    	</div>
+                    	<div class="col-4">
+                    		<h2>Crate Key</h2>
+                    	</div>
+                    	<div class="col-4">
+                    		<h2>Other</h2>
+                    	</div>
+                    </div>
                 </div>
                 <div id="crateSpinnerOptions" style="display:none">
                     <h1>Crate Spinner Options</h1>
-                    <div id="cPC1" class="input-group colorpicker-component" title="Using color option">
-                        <input id="crateParticleColor1" type="text" class="form-control input-lg"/>
-                        <span class="input-group-addon"><i></i></span>
-                    </div>
-                    <div id="cPC2" class="input-group colorpicker-component" title="Using color option">
-                        <input id="crateParticleColor2" type="text" class="form-control input-lg"/>
-                        <span class="input-group-addon"><i></i></span>
-                    </div>
                 </div>
                 <div id="crateLang" style="display:none">
                     <h1>Crate Lang Settings</h1>
                 </div>
                 <div id="globalLang" style="display:none">
                     <h1>Global Lang Settings</h1>
+
                 </div>
             </main>
         </div>
