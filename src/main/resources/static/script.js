@@ -178,6 +178,9 @@ function createNewCrate() {
         $("#newCrateName").removeClass("is-invalid");
         $("#newCrateNameInvalid").hide();
     }
+    if(!config.hasOwnProperty("crates")){
+        config.crates = {};
+    }
     if(id.length == 0 || config.crates.hasOwnProperty(id)){
         err = true;
         $("#newCrateID").addClass("is-invalid");
@@ -223,6 +226,12 @@ function updateUI() {
             }
         }
     }
+    if(currentCrate == null){
+        $("#newCrateModal").modal('show');
+        $("#crateOverview").hide();
+        return;
+    }
+    $("#crateOverview").show();
     if(config.crates[currentCrate].type.toLowerCase() != "spinner"){
         $("#crateSpinnerOptions-button").addClass("disabled");
         if(currentPage == "crateSpinnerOptions"){

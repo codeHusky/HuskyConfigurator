@@ -29,26 +29,33 @@ public class HuskyConfigurator {
     private static boolean connectionMade = false;
     private static long startTime = System.currentTimeMillis();
     private static ConfigurationLoader<CommentedConfigurationNode> loader = null;
+    private static String configStr = "{}";
     public static void main(String[] args) throws InterruptedException {
 
         Path currentDir = Paths.get(".").toAbsolutePath().normalize();
-        if(currentDir.getName(currentDir.getNameCount()-1).toString().equals("mods")){
-            File potentialConf = new File(Paths.get("../config/huskycrates/huskycrates.conf").toString());
-            if(potentialConf.exists()){
+        Path goal = null;
+        if (currentDir.getName(currentDir.getNameCount() - 1).toString().equals("mods")) {
+            goal = Paths.get("../config/huskycrates/huskycrates.conf");
+            File potentialConf = new File(goal.toString());
+            if (potentialConf.exists()) {
                 loader = HoconConfigurationLoader.builder().setFile(potentialConf).build();
             }
         }
-        if(loader == null){
-            loader = HoconConfigurationLoader.builder().setPath(Paths.get("huskycrates.conf")).build();
+        //String configStr = "{}";
+        if (loader == null) {
+            goal = Paths.get("huskycrates.conf");
+            loader = HoconConfigurationLoader.builder().setPath(goal).build();
         }
-
-        //loader.load();
-        JSONConfigurationLoader jsonloader = JSONConfigurationLoader.builder().build();
-        StringWriter writer = new StringWriter();
-        try {
-            jsonloader.saveInternal(loader.load(), writer);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (goal.toFile().exists()){
+                //loader.load();
+                JSONConfigurationLoader jsonloader = JSONConfigurationLoader.builder().build();
+            StringWriter writer = new StringWriter();
+            try {
+                jsonloader.saveInternal(loader.load(), writer);
+                configStr = writer.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         // = HoconConfigurationLoader.builder().setPath(conf.toPath()).build();
@@ -59,7 +66,8 @@ public class HuskyConfigurator {
 
         SocketIOServer server = new SocketIOServer(config);
         server.addConnectListener(socketIOClient -> {
-            socketIOClient.sendEvent("configData",writer.toString());
+            socketIOClient.sendEvent("configData",configStr);
+            System.out.println("Connected");
             connectionMade = true;
         });
 
@@ -140,6 +148,7 @@ public class HuskyConfigurator {
             }
             Thread.sleep(1);
         }
+        System.out.println("DED");
         server.stop();
         httpServ.stop(1);
     }
