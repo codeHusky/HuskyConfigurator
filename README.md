@@ -5,7 +5,7 @@ Configuration Utility for HuskyCrates
 Click [here](https://codehusky.github.io/HuskyConfigurator/src/main/resources/static/) for a NON-FUNCTIONAL DEMO of HuskyConfigurator.
 
 # How to use
-- Download the latest build from [releases](https://github.com/codeHusky/HuskyConfigurator/)
+- Download the latest build from [releases](https://github.com/codeHusky/HuskyConfigurator/releases)
 - (Optional) Place the jar file within your server's `/mods` folders (where you put plugins)
   - Placing the application within your `/config/huskycrates` folder will do the same thing.
 - Simply double-click to open the jar file. The webpage will automatically launch!
