@@ -255,7 +255,7 @@ function updateUI() {
 }
 var lastInterval = -1;
 function cratePreview(processing) {
-    processing.size(400,250);
+    processing.size(400,200);
     processing.draw = function() {
         var ccOp = config.crates[currentCrate].options;
         var width = processing.width;
@@ -270,7 +270,7 @@ function cratePreview(processing) {
         processing.pushMatrix();
 
             processing.translate(width/2,height/2);
-                    processing.scale(2);
+                    processing.scale(1.5);
             /*processing.stroke(255,0,0);
             processing.strokeWeight(3);
             processing.point(0,0);*/
