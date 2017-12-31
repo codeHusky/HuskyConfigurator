@@ -137,6 +137,13 @@
                     <br>
                     <div class="table-responsive">
                         <table class="table table-striped">
+                            <col>
+                            <col>
+                            <col>
+                            <col width="100px">
+                            <col width="100px">
+                            <col>
+                            <col>
                             <thead>
                                 <tr>
                                     <td></td>
@@ -315,50 +322,45 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Meta</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
           </div>
           <div class="modal-body">
             <div class="row">
                 <div class="col-4">
                     <h3>Lore</h3>
-                    <textarea style="max-width:100%;width:100%;min-height:100px"></textarea>
+                    <textarea id="itemLore" style="max-width:100%;width:100%;min-height:100px"></textarea>
                 </div>
                 <div class="col-8">
                     <h3>Enchantments</h3>
+                    <i style="font-size:12px">Enchantment names can be found <a target="_blank" href="https://minecraft.gamepedia.com/Enchanting/ID">here</a> under the "name" column. Use the PC names.</i>
                     <table class="table table-striped">
                         <thead>
                             <tr>
                                 <td></td>
-                                <td><b>Type</b></td>
+                                <td><b>Name</b></td>
                                 <td><b>Level</b></td>
                             </tr>
                         </thead>
-                        <tbody id="rewardEntries">
+                        <tbody id="enchantmentEntries">
                             <tr>
                                 <td><a class="btn btn-danger btn-block" style="color:white">&times;</a></td>
                                 <td>
-                                    <select id="rewardType" class="form-control">
-                                        <option value="command">Command</option>
-                                        <option value="item">Item</option>
-                                    </select>
+                                    <input id="enchantType" type="text" placeholder="Name" class="form-control">
                                 </td>
                                 <td>
-                                    <input id="rewardValue" type="text" placeholder="Value" class="form-control">
+                                    <input id="enchantLevel" type="number" placeholder="Level" class="form-control">
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    <center><a id="newEnchant" class="btn btn-success" style="color:white">New Enchantment</a></center>
                 </div>
             </div>
             <h3>NBT</h3>
             <i>This is an advanced feature! NBT must be in JSON format to be accepted.</i><br>
-            <div id="itemNBTEditor" style="height:300px;border:1px solid rgb(240, 240, 240)"></div>
+            <div id="itemNBTEditor" style="font-size:12px;height:300px;border:1px solid rgb(240, 240, 240)"></div>
           </div>
           <div class="modal-footer">
-            <a href="javascript:$('#editItemRewards').modal('hide');updateUI()" role="button" class="btn btn-primary">Save changes</a>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button data-dismiss="modal" type="button" class="btn btn-primary">Save changes</button>
           </div>
         </div>
       </div>

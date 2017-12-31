@@ -1,5 +1,5 @@
 const socket = io("http://localhost:46544");
-var config = {"crates":{"sosbasic":{"type":"Roulette","items":[{"lore":["Speakerbox"],"name":"BLAM","huskydata":{"overrideRewardName":"BLAM","rewards":[{"type":"item"}],"weight":1},"damage":3,"formatversion":1,"count":2,"id":"minecraft:planks"},{"formatversion":1,"huskydata":{"weight":3,"rewards":[{"type":"command","command":"smite %p"}]},"count":2,"id":"minecraft:ender_pearl","name":"&bLightning Pearl","lore":["&7Legend has it, just looking at this","&7pearl causes localized lightning."]}],"spinnerOptions":{"maxClicks":50,"dampening":1.025},"options":{"particle1":{"color":[150,150,0]},"crateBlockID":"minecraft:sponge","particle2":{"color":[100,100,0]},"keyID":"minecraft:iron_nugget"},"name":"&eSoS &6XIV &7Basic"},"command":{"type":"Spinner","items":[{"name":"Diamond Box","id":"minecraft:diamond","formatversion":1,"huskydata":{"rewards":[{"type":"command","command":"give %p minecraft:diamond 10"}],"weight":1},"count":1,"type":"Spinner","lore":["10 Minecraft Diamond"]},{"lore":["Speakerbox"],"name":"BLAM","formatversion":1,"id":"minecraft:dirt","count":2,"huskydata":{"overrideRewardName":"BLAM","weight":1,"rewards":[{"type":"command","command":"say %p is a potato."}]}},{"huskydata":{"weight":1,"overrideRewardName":"be a sore loser","rewards":[{"type":"command","command":"crate key command %p"}]},"formatversion":1,"name":"&4be a sore loser","id":"minecraft:stone","count":3,"lore":["try again BOI"]},{"formatversion":1,"id":"minecraft:dirt","name":"trash","huskydata":{"overrideRewardName":"trash","weight":1,"rewards":[{"type":"command","command":"say meh"}]},"count":4,"lore":["10 Minecraft Diamond"]}],"spinnerOptions":{"maxClickModifier":3,"minClickModifier":-3,"maxClicks":100,"dampening":1.025},"name":"&3Command Crate","options":{"keyID":"minecraft:dirt","particle2":{"color":[255,0,255]},"particle1":{"color":[0,255,0]}}},"soscool":{"name":"&eSoS &6XIV &aCool","items":[{"id":"minecraft:stick","name":"&4Bitchin Stick","formatversion":1,"count":1,"huskydata":{"rewards":[{"type":"item"}],"weight":1},"enchants":{"knockback":255,"satan":55}}],"options":{"keyID":"minecraft:gold_nugget","particle1":{"color":[255,255,0]},"crateBlockID":"minecraft:sponge","particle2":{"color":[150,150,0]}},"type":"Spinner","spinnerOptions":{"maxClicks":50,"dampening":1.025}},"sosbattle":{"type":"instant","items":[{"lore":["&bbrr brr brr brr"],"id":"minecraft:stick","formatversion":1,"name":"&3Chill Stick","count":1,"huskydata":{"rewards":[{"type":"item"}],"weight":1}}],"options":{"freeCrate":true,"particle2":{"color":[190,190,0]},"particle1":{"color":[255,72,0]},"crateBlockID":"minecraft:ender_chest","freeCrateDelay":5},"spinnerOptions":{"maxClicks":50,"dampening":1.025},"name":"&aSoS &6XIV &l&cArena","lang":{"rewardMessage":"Have %a &a%R&r!","prefix":"&c&lARENA&r&e>> "}},"fancy":{"name":"&bFancy Cool Crate","type":"Spinner","options":{"particle2":{"color":[255,255,0]},"particle1":{"color":[0,255,0]}},"items":[{"name":"minecraft:diamond","id":"minecraft:diamond","formatversion":1,"count":1,"huskydata":{"rewards":[{"type":"item"}],"weight":5}},{"name":"minecraft:dirt","formatversion":1,"id":"minecraft:dirt","count":15,"huskydata":{"rewards":[{"type":"item"}],"weight":20}},{"formatversion":1,"name":"&3Stoned the Stones","id":"minecraft:cobblestone","lore":["He once was a spooky stones."],"count":1,"huskydata":{"rewards":[{"type":"item"}],"weight":1}},{"formatversion":1,"count":1,"lore":[":)"],"name":"&6Pre-cut wood","huskydata":{"rewards":[{"type":"item"}],"weight":1},"id":"minecraft:planks"},{"formatversion":1,"lore":["idk someone gave it to me"],"id":"minecraft:diamond_sword","count":1,"name":"&cFancy sword","huskydata":{"rewards":[{"type":"item"}],"weight":1}}]}}};
+var config = {"crates":{"sosbasic":{"type":"Roulette","items":[{"lore":["Speakerbox"],"nbt":{"test":{"valueOfCool":55}},"name":"BLAM","huskydata":{"overrideRewardName":"BLAM","rewards":[{"type":"item"}],"weight":1},"damage":3,"formatversion":1,"count":2,"id":"minecraft:planks"},{"formatversion":1,"huskydata":{"weight":3,"rewards":[{"type":"command","command":"smite %p"}]},"count":2,"id":"minecraft:ender_pearl","name":"&bLightning Pearl","lore":["&7Legend has it, just looking at this","&7pearl causes localized lightning."]}],"spinnerOptions":{"maxClicks":50,"dampening":1.025},"options":{"particle1":{"color":[150,150,0]},"crateBlockID":"minecraft:sponge","particle2":{"color":[100,100,0]},"keyID":"minecraft:iron_nugget"},"name":"&eSoS &6XIV &7Basic"},"command":{"type":"Spinner","items":[{"name":"Diamond Box","id":"minecraft:diamond","formatversion":1,"huskydata":{"rewards":[{"type":"command","command":"give %p minecraft:diamond 10"}],"weight":1},"count":1,"type":"Spinner","lore":["10 Minecraft Diamond"]},{"lore":["Speakerbox"],"name":"BLAM","formatversion":1,"id":"minecraft:dirt","count":2,"huskydata":{"overrideRewardName":"BLAM","weight":1,"rewards":[{"type":"command","command":"say %p is a potato."}]}},{"huskydata":{"weight":1,"overrideRewardName":"be a sore loser","rewards":[{"type":"command","command":"crate key command %p"}]},"formatversion":1,"name":"&4be a sore loser","id":"minecraft:stone","count":3,"lore":["try again BOI"]},{"formatversion":1,"id":"minecraft:dirt","name":"trash","huskydata":{"overrideRewardName":"trash","weight":1,"rewards":[{"type":"command","command":"say meh"}]},"count":4,"lore":["10 Minecraft Diamond"]}],"spinnerOptions":{"maxClickModifier":3,"minClickModifier":-3,"maxClicks":100,"dampening":1.025},"name":"&3Command Crate","options":{"keyID":"minecraft:dirt","particle2":{"color":[255,0,255]},"particle1":{"color":[0,255,0]}}},"soscool":{"name":"&eSoS &6XIV &aCool","items":[{"id":"minecraft:stick","name":"&4Bitchin Stick","formatversion":1,"count":1,"huskydata":{"rewards":[{"type":"item"}],"weight":1},"enchants":{"knockback":255,"satan":55}}],"options":{"keyID":"minecraft:gold_nugget","particle1":{"color":[255,255,0]},"crateBlockID":"minecraft:sponge","particle2":{"color":[150,150,0]}},"type":"Spinner","spinnerOptions":{"maxClicks":50,"dampening":1.025}},"sosbattle":{"type":"instant","items":[{"lore":["&bbrr brr brr brr"],"id":"minecraft:stick","formatversion":1,"name":"&3Chill Stick","count":1,"huskydata":{"rewards":[{"type":"item"}],"weight":1}}],"options":{"freeCrate":true,"particle2":{"color":[190,190,0]},"particle1":{"color":[255,72,0]},"crateBlockID":"minecraft:ender_chest","freeCrateDelay":5},"spinnerOptions":{"maxClicks":50,"dampening":1.025},"name":"&aSoS &6XIV &l&cArena","lang":{"rewardMessage":"Have %a &a%R&r!","prefix":"&c&lARENA&r&e>> "}},"fancy":{"name":"&bFancy Cool Crate","type":"Spinner","options":{"particle2":{"color":[255,255,0]},"particle1":{"color":[0,255,0]}},"items":[{"name":"minecraft:diamond","id":"minecraft:diamond","formatversion":1,"count":1,"huskydata":{"rewards":[{"type":"item"}],"weight":5}},{"name":"minecraft:dirt","formatversion":1,"id":"minecraft:dirt","count":15,"huskydata":{"rewards":[{"type":"item"}],"weight":20}},{"formatversion":1,"name":"&3Stoned the Stones","id":"minecraft:cobblestone","lore":["He once was a spooky stones."],"count":1,"huskydata":{"rewards":[{"type":"item"}],"weight":1}},{"formatversion":1,"count":1,"lore":[":)"],"name":"&6Pre-cut wood","huskydata":{"rewards":[{"type":"item"}],"weight":1},"id":"minecraft:planks"},{"formatversion":1,"lore":["idk someone gave it to me"],"id":"minecraft:diamond_sword","count":1,"name":"&cFancy sword","huskydata":{"rewards":[{"type":"item"}],"weight":1}}]}}};
 updateUI();
 socket.on("connect", function() {
     console.log("connection to huskyconfigurator");
@@ -21,8 +21,9 @@ if(config != null){
 $("#newCrate").click(function() {
     $("#newCrateModal").modal('show')
 })
-$("#editItemMeta").modal("show")
+var latestItemID = -1;
 function launchRewardEditor(itemID){
+    latestItemID = itemID;
     $("#newReward").off("click").click(function() {
         config.crates[currentCrate].items[itemID].huskydata.rewards.push({type:"command"})
         updateRewardEditor(itemID);
@@ -31,6 +32,7 @@ function launchRewardEditor(itemID){
     $("#editItemRewards").modal("show");
 }
 function updateRewardEditor(itemID){
+    latestItemID = itemID;
     $("#rewardEntries").html("");
     if(config.crates[currentCrate].items[itemID].huskydata.rewards.length == 0){
         config.crates[currentCrate].items[itemID].huskydata.rewards.push({type:"command"})
@@ -54,7 +56,7 @@ function updateRewardEditor(itemID){
         $("#" + rType).change(function(){
             var num = $(this)[0].id.split("-")[3];
             config.crates[currentCrate].items[itemID].huskydata.rewards[num].type = $(this).val();
-            updateRewardEditor(itemID);
+            updateRewardEditor(latestItemID);
         })
         $("#" + rValue).change(function(){
             switch(config.crates[currentCrate].items[itemID].huskydata.rewards[num].type.toLowerCase()){
@@ -66,12 +68,82 @@ function updateRewardEditor(itemID){
                 break;
             }
             
-            updateRewardEditor(itemID);
+            updateRewardEditor(latestItemID);
         })
         $("#" + rDel).click(function() {
             config.crates[currentCrate].items[itemID].huskydata.rewards.splice(num,1);
-            updateRewardEditor(itemID);
+            updateRewardEditor(latestItemID);
         })
+    }
+}
+function launchMetaEditor(itemID){
+    latestItemID = itemID;
+    if(!config.crates[currentCrate].items[itemID].enchants){
+        config.crates[currentCrate].items[itemID].enchants = {};
+    }
+    $("#newEnchant").off("click").click(function() {
+        var enchantName = prompt("Type a valid enchant name to create a new enchantment.");
+        if(enchantName){
+            config.crates[currentCrate].items[itemID].enchants[enchantName] = 1;
+            updateMetaEditor(latestItemID);
+        }
+    })
+    updateMetaEditor(latestItemID);
+    $("#editItemMeta").modal("show").off("hidden.bs.modal").on("hidden.bs.modal", function() {
+        saveMetaEditor(itemID);
+    });
+    var completeLore = "";
+    for(var i = 0; i < config.crates[currentCrate].items[itemID].lore.length; i++){
+        completeLore += config.crates[currentCrate].items[itemID].lore[i] += "\n";
+    }
+    completeLore = completeLore.substring(0,completeLore.length-1);
+    $("#itemLore").val(completeLore);
+    if(config.crates[currentCrate].items[itemID].nbt){
+        editor.getSession().setValue(JSON.stringify(config.crates[currentCrate].items[itemID].nbt,null,"    "))
+    }else{
+        editor.getSession().setValue("")
+    }
+}
+function updateMetaEditor(itemID){
+    latestItemID = itemID;
+    $("#enchantmentEntries").html("");
+    for(enchantName in config.crates[currentCrate].items[itemID].enchants){
+        var ePrefix = "item-" + itemID + "-enchant-" + enchantName + "-";
+        var eDel = ePrefix + "delete";
+        var eName = ePrefix + "type";
+        var eLevel = ePrefix + "value";
+        var enchantLevel = config.crates[currentCrate].items[itemID].enchants[enchantName];
+        $("#enchantmentEntries").append('<tr><td><a class="btn btn-danger btn-block" id="' + eDel + '" style="color:white">&times;</a></td><td><input id="' + eName + '" type="text" value="' + enchantName + '" placeholder="Name" class="form-control"></td><td><input id="' + eLevel + '" type="number" placeholder="Level" value="' + enchantLevel + '" class="form-control"></td></tr>');
+        $("#" + eName).change(function(){
+            var oldName = $(this)[0].id.split("-")[3];
+            var oldData = JSON.parse(JSON.stringify(config.crates[currentCrate].items[itemID].enchants[oldName]))
+            delete config.crates[currentCrate].items[itemID].enchants[oldName];
+            config.crates[currentCrate].items[itemID].enchants[$(this).val()] = oldData
+            updateMetaEditor(latestItemID);
+        })
+        $("#" + eLevel).change(function(){ 
+            var id = $(this)[0].id.split("-")[3];
+            config.crates[currentCrate].items[itemID].enchants[id] = $(this).val();
+            updateMetaEditor(latestItemID);
+        })
+        $("#" + eDel).click(function() {
+            var id = $(this)[0].id.split("-")[3];
+            delete config.crates[currentCrate].items[itemID].enchants[id];
+            updateMetaEditor(latestItemID);
+        })
+    }
+}
+function saveMetaEditor(itemID){
+    var lore = $("#itemLore").val().split("\n");
+    config.crates[currentCrate].items[itemID].lore = lore;
+    if(editor.getSession().getValue().length > 0){
+        try{
+            config.crates[currentCrate].items[itemID].nbt = JSON.parse(editor.getSession().getValue());
+        }catch(e){
+            alert(e+"\n\nPlease resolve this error before saving.");
+            $("#editItemMeta").modal("show");
+            return;
+        }
     }
 }
 function createNewCrate() {
@@ -210,7 +282,7 @@ function updateUI() {
                 var weight = prefix + "weight";
                 var rewards = prefix + "rewards";
                 var item = crate.items[id];
-                $("#items").append('<tr id="item-' + id + '"><td><a id="'+ del +'" class="btn btn-danger btn-block" style="color:white">&times;</a></td><td><input type="text" placeholder="Name" value="' + item.name + '" class="form-control" id="'+ name +'"></td><td><input type="text" placeholder="Item ID" value="' + item.id + '" class="form-control" id="'+ itemID +'"></td><td><input type="text" placeholder="Damage" value="' + ((item.damage)?item.damage:"0") + '" class="form-control" id="'+ damage +'"></td><td><input type="text" placeholder="Count" value="' + ((item.count)?item.count:"1") + '" class="form-control" id="'+ count +'"></td><td><a class="btn btn-secondary btn-block" style="color:white" id="'+ meta +'">Edit</a></td><td><div class="input-group"><input type="text" value="' + item.huskydata.weight + '" placeholder="Weight" class="form-control" id="'+ weight +'"><span class="input-group-append"><span class="input-group-text">/ ' + weightSum +'</span></span></div></td><td><a href="javascript:launchRewardEditor(' + id + ')" class="nav-item nav-link btn btn-primary" style="color:white" id="'+ rewards +'">Edit (' + item.huskydata.rewards.length + ')</a></td></tr>')
+                $("#items").append('<tr id="item-' + id + '"><td><a id="'+ del +'" class="btn btn-danger btn-block" style="color:white">&times;</a></td><td><input type="text" placeholder="Name" value="' + item.name + '" class="form-control" id="'+ name +'"></td><td><input type="text" placeholder="Item ID" value="' + item.id + '" class="form-control" id="'+ itemID +'"></td><td><input type="number" placeholder="Damage" value="' + ((item.damage)?item.damage:"0") + '" class="form-control" id="'+ damage +'"></td><td><input type="number" placeholder="Count" value="' + ((item.count)?item.count:"1") + '" class="form-control" id="'+ count +'"></td><td><a class="btn btn-secondary btn-block" href="javascript:launchMetaEditor(' + id + ')" style="color:white" id="'+ meta +'">Edit</a></td><td><div class="input-group"><input type="number" value="' + item.huskydata.weight + '" placeholder="Weight" class="form-control" id="'+ weight +'"><span class="input-group-append"><span class="input-group-text">/ ' + weightSum +'</span></span></div></td><td><a href="javascript:launchRewardEditor(' + id + ')" class="nav-item nav-link btn btn-primary" style="color:white" id="'+ rewards +'">Edit (' + item.huskydata.rewards.length + ')</a></td></tr>')
                 $("#" + del).off("click").click(function(){
                     var id = parseFloat(this.id.split("-")[1]);
                     config.crates[currentCrate].items.splice(id,1);
