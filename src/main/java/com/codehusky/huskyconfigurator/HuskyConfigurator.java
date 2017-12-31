@@ -1,6 +1,9 @@
 package com.codehusky.huskyconfigurator;
 
+import com.codehusky.huskyconfigurator.events.StringEvent;
+import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.Configuration;
+import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.google.common.io.ByteStreams;
@@ -19,6 +22,7 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.Callable;
 
 public class HuskyConfigurator {
     private static boolean live = true;
@@ -61,6 +65,11 @@ public class HuskyConfigurator {
 
         server.addDisconnectListener(socketIOClient -> live = false);
 
+        server.addEventListener("saveConfigData", StringEvent.class, (socketIOClient, stringEvent, ackRequest) -> {
+            loader.save(JSONConfigurationLoader.builder().setSource(() -> new BufferedReader(new StringReader(stringEvent.getData()))).build().load());
+            socketIOClient.sendEvent("configDataSaved");
+            System.out.println("saved");
+        });
 
 
         server.start();
