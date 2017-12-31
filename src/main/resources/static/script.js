@@ -70,6 +70,7 @@ function createNewCrate() {
         $("#newCrateModal").modal('hide');
     }
 }
+var processingInstances=[];
 function updateUI() {
     if(config && currentCrate == null){
         if(config.crates){
@@ -245,11 +246,70 @@ function updateUI() {
                 config.crates[currentCrate].options.particle2.color[2] = $(this).val();
                 updateUI();
             })
-            
+            if(!procInstance){
+                procInstance = new Processing(document.getElementById("preview"),cratePreview)
+            }
         break;
     }
     $("#" + currentPage).show();
 }
+var lastInterval = -1;
+function cratePreview(processing) {
+    processing.size(400,250);
+    processing.draw = function() {
+        var ccOp = config.crates[currentCrate].options;
+        var width = processing.width;
+        var height = processing.height;
+        processing.stroke(0,0,0,100);
+        processing.strokeWeight(1);
+        processing.background(0,0,0,0);
+        processing.fill(0);
+        processing.textAlign(processing.LEFT,processing.TOP);
+        //processing.text(processing.frameCount,10,10)
+        
+        processing.pushMatrix();
+
+            processing.translate(width/2,height/2);
+                    processing.scale(2);
+            /*processing.stroke(255,0,0);
+            processing.strokeWeight(3);
+            processing.point(0,0);*/
+            processing.translate(0,-30)
+
+            processing.fill(152,100,33)
+            processing.stroke(51,45,36);
+            processing.strokeWeight(3)
+            processing.quad(-40,0,0,-20,39,0,0,20);
+            processing.quad(-40,0,0,20,0,70,-40,50);
+            processing.quad(40,0,0,20,0,70,40,50)
+            processing.line(40,20,0,40);
+            processing.line(-40,20,0,40)
+            processing.fill(185,185,185);
+            processing.stroke(100);
+            processing.strokeWeight(1);
+            processing.quad(
+                25,17,
+                18,20,
+                18,40,
+                25,37)
+            processing.fill(ccOp.particle1.color[0],ccOp.particle1.color[1],ccOp.particle1.color[2],210)
+            processing.noStroke();
+            for(var i = -3; i <= 3; i++){
+                var siz = 15-(((processing.frameCount/5)+i)%15);
+                processing.ellipse(i*17,33 + (Math.sin((i-3)/2)*10),siz,siz)
+            }
+            processing.fill(ccOp.particle2.color[0],ccOp.particle2.color[1],ccOp.particle2.color[2],210)
+            for(var i = -3; i <= 3; i++){
+                var siz = 15+((((-processing.frameCount)/5)+i)%15);
+                processing.ellipse(i*17,43 + (Math.sin((i+3)/2)*10),siz,siz)
+            }
+        processing.popMatrix();
+
+
+        //processing.rect(width/2,height/2,30,30)
+    }
+}
+var procInstance;
 var hexPart = function (rgb) { 
   var hex = Number(rgb).toString(16);
   if (hex.length < 2) {
