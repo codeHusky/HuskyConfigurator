@@ -21,6 +21,59 @@ if(config != null){
 $("#newCrate").click(function() {
     $("#newCrateModal").modal('show')
 })
+$("#editItemMeta").modal("show")
+function launchRewardEditor(itemID){
+    $("#newReward").off("click").click(function() {
+        config.crates[currentCrate].items[itemID].huskydata.rewards.push({type:"command"})
+        updateRewardEditor(itemID);
+    })
+    updateRewardEditor(itemID);
+    $("#editItemRewards").modal("show");
+}
+function updateRewardEditor(itemID){
+    $("#rewardEntries").html("");
+    if(config.crates[currentCrate].items[itemID].huskydata.rewards.length == 0){
+        config.crates[currentCrate].items[itemID].huskydata.rewards.push({type:"command"})
+    }
+    for(num in config.crates[currentCrate].items[itemID].huskydata.rewards){
+        var rPrefix = "item-" + itemID + "-reward-" + num + "-";
+        var rDel = rPrefix + "delete";
+        var rType = rPrefix + "type";
+        var rValue = rPrefix + "value";
+        var rew = config.crates[currentCrate].items[itemID].huskydata.rewards[num];
+        if(rew.type == "command"){
+            if(!rew.hasOwnProperty("command")){
+                config.crates[currentCrate].items[itemID].huskydata.rewards[num].command="say Hello, world!";
+            }
+        }else{
+            if(rew.hasOwnProperty("command")){
+                delete config.crates[currentCrate].items[itemID].huskydata.rewards[num].command;
+            }
+        }
+        $("#rewardEntries").append('<tr><td><a class="btn btn-danger btn-block" id="' + rDel + '"style="color:white">&times;</a></td><td><select id="' + rType + '" class="form-control"><option ' + ( (rew.type.toLowerCase() == "command")?"selected":"" ) + ' value="command">Command</option><option ' + ( (rew.type.toLowerCase() == "item")?"selected":"" ) + ' value="item">Return Display Item</option></select></td><td><input ' + ( (rew.type.toLowerCase() == "item")?"disabled":"" ) + ' id="' + rValue + '" type="text" placeholder="Value" value="' + ( (rew.type.toLowerCase() == "command")?rew.command:"" ) + '" class="form-control"></td></tr>');
+        $("#" + rType).change(function(){
+            var num = $(this)[0].id.split("-")[3];
+            config.crates[currentCrate].items[itemID].huskydata.rewards[num].type = $(this).val();
+            updateRewardEditor(itemID);
+        })
+        $("#" + rValue).change(function(){
+            switch(config.crates[currentCrate].items[itemID].huskydata.rewards[num].type.toLowerCase()){
+                case "command":
+                    config.crates[currentCrate].items[itemID].huskydata.rewards[num].command = $(this).val();
+                break;
+                case "item":
+                    alert("?!?")
+                break;
+            }
+            
+            updateRewardEditor(itemID);
+        })
+        $("#" + rDel).click(function() {
+            config.crates[currentCrate].items[itemID].huskydata.rewards.splice(num,1);
+            updateRewardEditor(itemID);
+        })
+    }
+}
 function createNewCrate() {
     var name = $("#newCrateName").val();
     var id = $("#newCrateID").val();
@@ -101,18 +154,18 @@ function updateUI() {
     var crate = config.crates[currentCrate];
     switch(currentPage){
         case "crateOverview":
-            $("#displayname").val(crate.name).change(function(){
+            $("#displayname").val(crate.name).off("change").change(function(){
                 config.crates[currentCrate].name = $(this).val();
                 updateUI();
             });
-            $("#crateID").val(currentCrate).change(function() {
+            $("#crateID").val(currentCrate).off("change").change(function() {
                 var old = JSON.parse(JSON.stringify(config.crates[currentCrate]));
                 delete config.crates[currentCrate];
                 currentCrate = $(this).val();
                 config.crates[currentCrate] = old;
                 updateUI();
             })
-            $("#cratetype").val(crate.type.toLowerCase()).change(function() {
+            $("#cratetype").val(crate.type.toLowerCase()).off("change").change(function() {
                 config.crates[currentCrate].type = $(this).val();
                 updateUI();
             })
@@ -127,8 +180,7 @@ function updateUI() {
         break;
         case "crateItems":
             $("#items").html("");
-            $("#newItem").unbind()
-            $("#newItem").click(function() {
+            $("#newItem").off("click").click(function() {
                 config.crates[currentCrate].items.push({
                     id:"minecraft:dirt",
                     name:"New Item",
@@ -158,38 +210,38 @@ function updateUI() {
                 var weight = prefix + "weight";
                 var rewards = prefix + "rewards";
                 var item = crate.items[id];
-                $("#items").append('<tr id="item-' + id + '"><td><a id="'+ del +'" class="btn btn-danger" style="color:white">&times;</a></td><td><input type="text" placeholder="Name" value="' + item.name + '" class="form-control" id="'+ name +'"></td><td><input type="text" placeholder="Item ID" value="' + item.id + '" class="form-control" id="'+ itemID +'"></td><td><input type="text" placeholder="Damage" value="' + ((item.damage)?item.damage:"0") + '" class="form-control" id="'+ damage +'"></td><td><input type="text" placeholder="Count" value="' + ((item.count)?item.count:"1") + '" class="form-control" id="'+ count +'"></td><td><a class="btn btn-secondary" style="color:white" id="'+ meta +'">Edit</a></td><td><div class="input-group"><input type="text" value="' + item.huskydata.weight + '" placeholder="Weight" class="form-control" id="'+ weight +'"><span class="input-group-addon">/ ' + weightSum +'</span></div></td><td><a class="nav-item nav-link btn btn-primary" style="color:white" id="'+ rewards +'">Edit (' + item.huskydata.rewards.length + ')</a></td></tr>')
-                $("#" + del).click(function(){
+                $("#items").append('<tr id="item-' + id + '"><td><a id="'+ del +'" class="btn btn-danger btn-block" style="color:white">&times;</a></td><td><input type="text" placeholder="Name" value="' + item.name + '" class="form-control" id="'+ name +'"></td><td><input type="text" placeholder="Item ID" value="' + item.id + '" class="form-control" id="'+ itemID +'"></td><td><input type="text" placeholder="Damage" value="' + ((item.damage)?item.damage:"0") + '" class="form-control" id="'+ damage +'"></td><td><input type="text" placeholder="Count" value="' + ((item.count)?item.count:"1") + '" class="form-control" id="'+ count +'"></td><td><a class="btn btn-secondary btn-block" style="color:white" id="'+ meta +'">Edit</a></td><td><div class="input-group"><input type="text" value="' + item.huskydata.weight + '" placeholder="Weight" class="form-control" id="'+ weight +'"><span class="input-group-append"><span class="input-group-text">/ ' + weightSum +'</span></span></div></td><td><a href="javascript:launchRewardEditor(' + id + ')" class="nav-item nav-link btn btn-primary" style="color:white" id="'+ rewards +'">Edit (' + item.huskydata.rewards.length + ')</a></td></tr>')
+                $("#" + del).off("click").click(function(){
                     var id = parseFloat(this.id.split("-")[1]);
                     config.crates[currentCrate].items.splice(id,1);
                     updateUI();
                 })
-                $("#" + name).change(function() {
+                $("#" + name).off("change").change(function() {
                     var id = parseFloat(this.id.split("-")[1]);
                     config.crates[currentCrate].items[id].name = $(this).val();
                     updateUI();
                 })
-                $("#" + damage).change(function() {
+                $("#" + damage).off("change").change(function() {
                     var id = parseFloat(this.id.split("-")[1]);
                     config.crates[currentCrate].items[id].damage = parseFloat($(this).val());
                     updateUI();
                 })
-                $("#" + count).change(function() {
+                $("#" + count).off("change").change(function() {
                     var id = parseFloat(this.id.split("-")[1]);
                     config.crates[currentCrate].items[id].count = parseFloat($(this).val());
                     updateUI();
                 })
-                $("#" + meta).click(function(){
+                $("#" + meta).off("click").click(function(){
                     var id = parseFloat(this.id.split("-")[1]);
                     //config.crates[currentCrate].items.splice(id,1);
                     updateUI();
                 })
-                $("#" + weight).change(function() {
+                $("#" + weight).off("change").change(function() {
                     var id = parseFloat(this.id.split("-")[1]);
                     config.crates[currentCrate].items[id].huskydata.weight = parseFloat($(this).val());
                     updateUI();
                 })
-                $("#" + rewards).click(function(){
+                $("#" + rewards).off("click").click(function(){
                     var id = parseFloat(this.id.split("-")[1]);
                     //config.crates[currentCrate].items.splice(id,1);
                     updateUI();
@@ -217,15 +269,15 @@ function updateUI() {
                 crate.options.particle1.color[1],
                 crate.options.particle1.color[2]
             ))
-            $("#part-1-r").val(crate.options.particle1.color[0]).change(function() {
+            $("#part-1-r").val(crate.options.particle1.color[0]).off("change").change(function() {
                 config.crates[currentCrate].options.particle1.color[0] = $(this).val();
                 updateUI();
             })
-            $("#part-1-g").val(crate.options.particle1.color[1]).change(function() {
+            $("#part-1-g").val(crate.options.particle1.color[1]).off("change").change(function() {
                 config.crates[currentCrate].options.particle1.color[1] = $(this).val();
                 updateUI();
             })
-            $("#part-1-b").val(crate.options.particle1.color[2]).change(function() {
+            $("#part-1-b").val(crate.options.particle1.color[2]).off("change").change(function() {
                 config.crates[currentCrate].options.particle1.color[2] = $(this).val();
                 updateUI();
             })
@@ -234,20 +286,34 @@ function updateUI() {
                 crate.options.particle2.color[1],
                 crate.options.particle2.color[2]
             ))
-            $("#part-2-r").val(crate.options.particle2.color[0]).change(function() {
+            $("#part-2-r").val(crate.options.particle2.color[0]).off("change").change(function() {
                 config.crates[currentCrate].options.particle2.color[0] = $(this).val();
                 updateUI();
             })
-            $("#part-2-g").val(crate.options.particle2.color[1]).change(function() {
+            $("#part-2-g").val(crate.options.particle2.color[1]).off("change").change(function() {
                 config.crates[currentCrate].options.particle2.color[1] = $(this).val();
                 updateUI();
             })
-            $("#part-2-b").val(crate.options.particle2.color[2]).change(function() {
+            $("#part-2-b").val(crate.options.particle2.color[2]).off("change").change(function() {
                 config.crates[currentCrate].options.particle2.color[2] = $(this).val();
                 updateUI();
             })
             if(!procInstance){
                 procInstance = new Processing(document.getElementById("preview"),cratePreview)
+            }
+            if(!crate.options.hasOwnProperty("freeCrate")){
+                config.crates[currentCrate].options.freeCrate = false;
+            }
+            if(crate.options.freeCrate == true){
+                $("#freeCrateToggle").addClass("btn-success").removeClass("btn-secondary").text("Enabled").off("click").click(function() {
+                    config.crates[currentCrate].options.freeCrate = false;
+                    updateUI();
+                });
+            }else{
+                $("#freeCrateToggle").addClass("btn-secondary").removeClass("btn-success").text("Disabled").off("click").click(function() {
+                    config.crates[currentCrate].options.freeCrate = true;
+                    updateUI();
+                });
             }
         break;
     }
@@ -300,7 +366,7 @@ function cratePreview(processing) {
             }
             processing.fill(ccOp.particle2.color[0],ccOp.particle2.color[1],ccOp.particle2.color[2],210)
             for(var i = -3; i <= 3; i++){
-                var siz = 15+((((-processing.frameCount)/5)+i)%15);
+                var siz = 15+((((-(processing.frameCount+20))/5)+i)%15);
                 processing.ellipse(i*17,43 + (Math.sin((i+3)/2)*10),siz,siz)
             }
         processing.popMatrix();
