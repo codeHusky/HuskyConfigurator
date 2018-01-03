@@ -309,7 +309,7 @@ function updateUI() {
                 var weight = prefix + "weight";
                 var rewards = prefix + "rewards";
                 var item = crate.items[id];
-                $("#items").append('<tr id="item-' + id + '"><td><a id="'+ del +'" class="btn btn-danger btn-block" style="color:white">&times;</a></td><td><input type="text" placeholder="Name" value="' + item.name + '" class="form-control" id="'+ name +'"></td><td><input type="text" placeholder="Item ID" value="' + item.id + '" class="form-control" id="'+ itemID +'"></td><td><input type="number" placeholder="Damage" value="' + ((item.damage)?item.damage:"0") + '" class="form-control" id="'+ damage +'"></td><td><input type="number" placeholder="Count" value="' + ((item.count)?item.count:"1") + '" class="form-control" id="'+ count +'"></td><td><a class="btn btn-secondary btn-block" href="javascript:launchMetaEditor(' + id + ')" style="color:white" id="'+ meta +'">Edit</a></td><td><div class="input-group"><input type="number" value="' + item.huskydata.weight + '" placeholder="Weight" class="form-control" id="'+ weight +'"><span class="input-group-append"><span class="input-group-text">/ ' + weightSum +'</span></span></div></td><td><a href="javascript:launchRewardEditor(' + id + ')" class="nav-item nav-link btn btn-primary" style="color:white" id="'+ rewards +'">Edit (' + item.huskydata.rewards.length + ')</a></td></tr>')
+                $("#items").append('<tr id="item-' + id + '"><td><a id="'+ del +'" class="btn btn-danger btn-block" style="color:white">&times;</a></td><td><input type="text" placeholder="No Name Set (will display item name)" value="' + ((item.name)?item.name:"") + '" class="form-control" id="'+ name +'"></td><td><input type="text" placeholder="Item ID" value="' + item.id + '" class="form-control" id="'+ itemID +'"></td><td><input type="number" placeholder="Damage" value="' + ((item.damage)?item.damage:"0") + '" class="form-control" id="'+ damage +'"></td><td><input type="number" placeholder="Count" value="' + ((item.count)?item.count:"1") + '" class="form-control" id="'+ count +'"></td><td><a class="btn btn-secondary btn-block" href="javascript:launchMetaEditor(' + id + ')" style="color:white" id="'+ meta +'">Edit</a></td><td><div class="input-group"><input type="number" value="' + item.huskydata.weight + '" placeholder="Weight" class="form-control" id="'+ weight +'"><span class="input-group-append"><span class="input-group-text">/ ' + weightSum +'</span></span></div></td><td><a href="javascript:launchRewardEditor(' + id + ')" class="nav-item nav-link btn btn-primary" style="color:white" id="'+ rewards +'">Edit (' + item.huskydata.rewards.length + ')</a></td></tr>')
                 $("#" + del).off("click").click(function(){
                     var id = parseFloat(this.id.split("-")[1]);
                     config.crates[currentCrate].items.splice(id,1);
@@ -318,6 +318,11 @@ function updateUI() {
                 $("#" + name).off("change").change(function() {
                     var id = parseFloat(this.id.split("-")[1]);
                     config.crates[currentCrate].items[id].name = $(this).val();
+                    updateUI();
+                })
+                $("#" + itemID).off("change").change(function() {
+                    var id = parseFloat(this.id.split("-")[1]);
+                    config.crates[currentCrate].items[id].id = $(this).val();
                     updateUI();
                 })
                 $("#" + damage).off("change").change(function() {

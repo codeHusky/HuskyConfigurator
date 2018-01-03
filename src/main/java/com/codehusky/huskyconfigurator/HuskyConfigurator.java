@@ -47,14 +47,16 @@ public class HuskyConfigurator {
             loader = HoconConfigurationLoader.builder().setPath(goal).build();
         }
         if (goal.toFile().exists()){
+            if(goal.toFile().length() > 0) {
                 //loader.load();
                 JSONConfigurationLoader jsonloader = JSONConfigurationLoader.builder().build();
-            StringWriter writer = new StringWriter();
-            try {
-                jsonloader.saveInternal(loader.load(), writer);
-                configStr = writer.toString();
-            } catch (IOException e) {
-                e.printStackTrace();
+                StringWriter writer = new StringWriter();
+                try {
+                    jsonloader.saveInternal(loader.load(), writer);
+                    configStr = writer.toString();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
