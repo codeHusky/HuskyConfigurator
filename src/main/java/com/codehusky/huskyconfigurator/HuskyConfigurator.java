@@ -15,6 +15,7 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.json.JSONConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import ninja.leaping.configurate.loader.HeaderMode;
 
 import java.awt.*;
 import java.io.*;
@@ -38,13 +39,13 @@ public class HuskyConfigurator {
             goal = Paths.get("../config/huskycrates/huskycrates.conf");
             File potentialConf = new File(goal.toString());
             if (potentialConf.exists()) {
-                loader = HoconConfigurationLoader.builder().setFile(potentialConf).build();
+                loader = HoconConfigurationLoader.builder().setHeaderMode(HeaderMode.PRESET).setFile(potentialConf).build();
             }
         }
         //String configStr = "{}";
         if (loader == null) {
             goal = Paths.get("huskycrates.conf");
-            loader = HoconConfigurationLoader.builder().setPath(goal).build();
+            loader = HoconConfigurationLoader.builder().setHeaderMode(HeaderMode.PRESET).setPath(goal).build();
         }
         if (goal.toFile().exists()){
             if(goal.toFile().length() > 0) {
@@ -76,7 +77,14 @@ public class HuskyConfigurator {
         server.addDisconnectListener(socketIOClient -> live = false);
 
         server.addEventListener("saveConfigData", StringEvent.class, (socketIOClient, stringEvent, ackRequest) -> {
-            loader.save(JSONConfigurationLoader.builder().setSource(() -> new BufferedReader(new StringReader(stringEvent.getData()))).build().load());
+            System.out.println("????");
+            try {
+                InputStream read = new ByteArrayInputStream(stringEvent.getData().getBytes());
+                BufferedReader bReader = new BufferedReader(new InputStreamReader(read));
+                loader.save(JSONConfigurationLoader.builder().setHeaderMode(HeaderMode.PRESET).setSource(() -> bReader).build().load());
+            }catch(Exception e){
+                e.printStackTrace();
+            }
             socketIOClient.sendEvent("configDataSaved");
             System.out.println("saved");
         });
