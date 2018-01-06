@@ -77,6 +77,7 @@ function updateRewardEditor(itemID){
             updateRewardEditor(latestItemID);
         })
         $("#" + rValue).change(function(){
+            var num = $(this)[0].id.split("-")[3];
             switch(config.crates[currentCrate].items[itemID].huskydata.rewards[num].type.toLowerCase()){
                 case "command":
                     config.crates[currentCrate].items[itemID].huskydata.rewards[num].command = $(this).val();
