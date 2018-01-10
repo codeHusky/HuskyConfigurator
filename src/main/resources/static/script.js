@@ -112,10 +112,12 @@ function launchMetaEditor(itemID){
         saveMetaEditor(itemID);
     });
     var completeLore = "";
-    for(var i = 0; i < config.crates[currentCrate].items[itemID].lore.length; i++){
-        completeLore += config.crates[currentCrate].items[itemID].lore[i] += "\n";
+    if(config.crates[currentCrate].items[itemID].hasOwnProperty("lore")){
+        for(var i = 0; i < config.crates[currentCrate].items[itemID].lore.length; i++){
+            completeLore += config.crates[currentCrate].items[itemID].lore[i] += "\n";
+        }
+        completeLore = completeLore.substring(0,completeLore.length-1);
     }
-    completeLore = completeLore.substring(0,completeLore.length-1);
     $("#itemLore").val(completeLore);
     if(config.crates[currentCrate].items[itemID].nbt){
         editor.getSession().setValue(JSON.stringify(config.crates[currentCrate].items[itemID].nbt,null,"    "))
@@ -269,18 +271,27 @@ function updateUI() {
                 config.crates[currentCrate].type = $(this).val();
                 updateUI();
             })
-            $("#itemCount").text(crate.items.length);
-            var weightSum = 0;
-            for(var i = 0; i < crate.items.length; i++){
-                var item = crate.items[i];
-                weightSum += item.huskydata.weight;
+            if(crate.hasOwnProperty("items")){
+                $("#itemCount").text(crate.items.length);
+                var weightSum = 0;
+                for(var i = 0; i < crate.items.length; i++){
+                    var item = crate.items[i];
+                    weightSum += item.huskydata.weight;
+                }
+                $("#itemWeightSum").text(weightSum);
+                $("#avgChance").text(100*((weightSum/crate.items.length)/weightSum) + "%").attr("title","Actual Weight: " + (weightSum/crate.items.length));
+            }else{
+                $("#itemCount").text("N/A");
+                $("#itemWeightSum").text("N/A");
+                $("#avgChance").text("N/A");
             }
-            $("#itemWeightSum").text(weightSum);
-            $("#avgChance").text(100*((weightSum/crate.items.length)/weightSum) + "%").attr("title","Actual Weight: " + (weightSum/crate.items.length));
         break;
         case "crateItems":
             $("#items").html("");
             $("#newItem").off("click").click(function() {
+                if(!config.crates[currentCrate].hasOwnProperty("items")){
+                    config.crates[currentCrate].items = [];
+                }
                 config.crates[currentCrate].items.push({
                     id:"minecraft:dirt",
                     name:"New Item",
@@ -295,62 +306,64 @@ function updateUI() {
                 updateUI();
             })
             var weightSum = 0;
-            for(var i = 0; i < crate.items.length; i++){
-                var item = crate.items[i];
-                weightSum += item.huskydata.weight;
-            }
-            for(id in crate.items){
-                var prefix = "item-" + id + "-";
-                var del = prefix + "delete";
-                var name = prefix + "name";
-                var itemID = prefix + "itemID";
-                var damage = prefix + "damage";
-                var count = prefix + "count";
-                var meta = prefix + "meta";
-                var weight = prefix + "weight";
-                var rewards = prefix + "rewards";
-                var item = crate.items[id];
-                $("#items").append('<tr id="item-' + id + '"><td><a id="'+ del +'" class="btn btn-danger btn-block" style="color:white">&times;</a></td><td><input type="text" placeholder="No Name Set (will display item name)" value="' + ((item.name)?item.name:"") + '" class="form-control" id="'+ name +'"></td><td><input type="text" placeholder="Item ID" value="' + item.id + '" class="form-control" id="'+ itemID +'"></td><td><input type="number" placeholder="Damage" value="' + ((item.damage)?item.damage:"0") + '" class="form-control" id="'+ damage +'"></td><td><input type="number" placeholder="Count" value="' + ((item.count)?item.count:"1") + '" class="form-control" id="'+ count +'"></td><td><a class="btn btn-secondary btn-block" href="javascript:launchMetaEditor(' + id + ')" style="color:white" id="'+ meta +'">Edit</a></td><td><div class="input-group"><input type="number" value="' + item.huskydata.weight + '" placeholder="Weight" class="form-control" id="'+ weight +'"><span class="input-group-append"><span class="input-group-text">/ ' + weightSum +'</span></span></div></td><td><a href="javascript:launchRewardEditor(' + id + ')" class="nav-item nav-link btn btn-primary" style="color:white" id="'+ rewards +'">Edit (' + item.huskydata.rewards.length + ')</a></td></tr>')
-                $("#" + del).off("click").click(function(){
-                    var id = parseFloat(this.id.split("-")[1]);
-                    config.crates[currentCrate].items.splice(id,1);
-                    updateUI();
-                })
-                $("#" + name).off("change").change(function() {
-                    var id = parseFloat(this.id.split("-")[1]);
-                    config.crates[currentCrate].items[id].name = $(this).val();
-                    updateUI();
-                })
-                $("#" + itemID).off("change").change(function() {
-                    var id = parseFloat(this.id.split("-")[1]);
-                    config.crates[currentCrate].items[id].id = $(this).val();
-                    updateUI();
-                })
-                $("#" + damage).off("change").change(function() {
-                    var id = parseFloat(this.id.split("-")[1]);
-                    config.crates[currentCrate].items[id].damage = parseFloat($(this).val());
-                    updateUI();
-                })
-                $("#" + count).off("change").change(function() {
-                    var id = parseFloat(this.id.split("-")[1]);
-                    config.crates[currentCrate].items[id].count = parseFloat($(this).val());
-                    updateUI();
-                })
-                $("#" + meta).off("click").click(function(){
-                    var id = parseFloat(this.id.split("-")[1]);
-                    //config.crates[currentCrate].items.splice(id,1);
-                    updateUI();
-                })
-                $("#" + weight).off("change").change(function() {
-                    var id = parseFloat(this.id.split("-")[1]);
-                    config.crates[currentCrate].items[id].huskydata.weight = parseFloat($(this).val());
-                    updateUI();
-                })
-                $("#" + rewards).off("click").click(function(){
-                    var id = parseFloat(this.id.split("-")[1]);
-                    //config.crates[currentCrate].items.splice(id,1);
-                    updateUI();
-                })
+            if(crate.hasOwnProperty("items")){
+                for(var i = 0; i < crate.items.length; i++){
+                    var item = crate.items[i];
+                    weightSum += item.huskydata.weight;
+                }
+                for(id in crate.items){
+                    var prefix = "item-" + id + "-";
+                    var del = prefix + "delete";
+                    var name = prefix + "name";
+                    var itemID = prefix + "itemID";
+                    var damage = prefix + "damage";
+                    var count = prefix + "count";
+                    var meta = prefix + "meta";
+                    var weight = prefix + "weight";
+                    var rewards = prefix + "rewards";
+                    var item = crate.items[id];
+                    $("#items").append('<tr id="item-' + id + '"><td><a id="'+ del +'" class="btn btn-danger btn-block" style="color:white">&times;</a></td><td><input type="text" placeholder="No Name Set (will display item name)" value="' + ((item.name)?item.name:"") + '" class="form-control" id="'+ name +'"></td><td><input type="text" placeholder="Item ID" value="' + item.id + '" class="form-control" id="'+ itemID +'"></td><td><input type="number" placeholder="Damage" value="' + ((item.damage)?item.damage:"0") + '" class="form-control" id="'+ damage +'"></td><td><input type="number" placeholder="Count" value="' + ((item.count)?item.count:"1") + '" class="form-control" id="'+ count +'"></td><td><a class="btn btn-secondary btn-block" href="javascript:launchMetaEditor(' + id + ')" style="color:white" id="'+ meta +'">Edit</a></td><td><div class="input-group"><input type="number" value="' + item.huskydata.weight + '" placeholder="Weight" class="form-control" id="'+ weight +'"><span class="input-group-append"><span class="input-group-text">/ ' + weightSum +'</span></span></div></td><td><a href="javascript:launchRewardEditor(' + id + ')" class="nav-item nav-link btn btn-primary" style="color:white" id="'+ rewards +'">Edit (' + item.huskydata.rewards.length + ')</a></td></tr>')
+                    $("#" + del).off("click").click(function(){
+                        var id = parseFloat(this.id.split("-")[1]);
+                        config.crates[currentCrate].items.splice(id,1);
+                        updateUI();
+                    })
+                    $("#" + name).off("change").change(function() {
+                        var id = parseFloat(this.id.split("-")[1]);
+                        config.crates[currentCrate].items[id].name = $(this).val();
+                        updateUI();
+                    })
+                    $("#" + itemID).off("change").change(function() {
+                        var id = parseFloat(this.id.split("-")[1]);
+                        config.crates[currentCrate].items[id].id = $(this).val();
+                        updateUI();
+                    })
+                    $("#" + damage).off("change").change(function() {
+                        var id = parseFloat(this.id.split("-")[1]);
+                        config.crates[currentCrate].items[id].damage = parseFloat($(this).val());
+                        updateUI();
+                    })
+                    $("#" + count).off("change").change(function() {
+                        var id = parseFloat(this.id.split("-")[1]);
+                        config.crates[currentCrate].items[id].count = parseFloat($(this).val());
+                        updateUI();
+                    })
+                    $("#" + meta).off("click").click(function(){
+                        var id = parseFloat(this.id.split("-")[1]);
+                        //config.crates[currentCrate].items.splice(id,1);
+                        updateUI();
+                    })
+                    $("#" + weight).off("change").change(function() {
+                        var id = parseFloat(this.id.split("-")[1]);
+                        config.crates[currentCrate].items[id].huskydata.weight = parseFloat($(this).val());
+                        updateUI();
+                    })
+                    $("#" + rewards).off("click").click(function(){
+                        var id = parseFloat(this.id.split("-")[1]);
+                        //config.crates[currentCrate].items.splice(id,1);
+                        updateUI();
+                    })
+                }
             }
         break;
         case "crateOptions":
