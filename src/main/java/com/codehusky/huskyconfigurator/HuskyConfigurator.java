@@ -11,6 +11,7 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.json.JSONConfigurationLoader;
@@ -53,8 +54,13 @@ public class HuskyConfigurator {
                 JSONConfigurationLoader jsonloader = JSONConfigurationLoader.builder().build();
                 StringWriter writer = new StringWriter();
                 try {
-                    jsonloader.saveInternal(loader.load(), writer);
-                    configStr = writer.toString();
+                    try {
+                        jsonloader.saveInternal(loader.load(), writer);
+                        configStr = writer.toString();
+                    }catch(NullPointerException e){
+                        System.out.println("Warning: Failed to write config to JSON!");
+                        configStr = "{}";
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -68,13 +74,18 @@ public class HuskyConfigurator {
         config.setPort(46544);
 
         SocketIOServer server = new SocketIOServer(config);
+
         server.addConnectListener(socketIOClient -> {
             socketIOClient.sendEvent("configData",configStr);
             System.out.println("Connected");
             connectionMade = true;
         });
 
-        server.addDisconnectListener(socketIOClient -> live = false);
+        server.addDisconnectListener(socketIOClient -> {
+            if(server.getAllClients().size() == 0) {
+                live = false;
+            }
+        });
 
         server.addEventListener("saveConfigData", StringEvent.class, (socketIOClient, stringEvent, ackRequest) -> {
             System.out.println("????");
