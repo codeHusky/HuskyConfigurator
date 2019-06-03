@@ -25,6 +25,7 @@ socket.on("connect", function() {
 socket.on("configData",function(data){
     config = JSON.parse(data);
     console.log("JSON config received!")
+    console.log(data)
     updateUI();
 })
 socket.on("configDataSaved",function(){

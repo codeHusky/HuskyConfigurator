@@ -17,3 +17,6 @@ target/
 # gradle
 .gradle/
 build/
+error\.log
+
+huskycrates\.conf

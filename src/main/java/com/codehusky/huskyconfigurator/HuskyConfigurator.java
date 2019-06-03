@@ -1,17 +1,13 @@
 package com.codehusky.huskyconfigurator;
 
 import com.codehusky.huskyconfigurator.events.StringEvent;
-import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.Configuration;
-import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
-import com.corundumstudio.socketio.listener.DataListener;
 import com.google.common.io.ByteStreams;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.json.JSONConfigurationLoader;
@@ -28,9 +24,7 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.Date;
 
 public class HuskyConfigurator extends JPanel implements ActionListener {
     private static boolean live = true;
@@ -39,13 +33,11 @@ public class HuskyConfigurator extends JPanel implements ActionListener {
     private static ConfigurationLoader<CommentedConfigurationNode> loader = null;
     private static String configStr = "{}";
     static private final String newline = "\n";
-    JButton openButton, convertButton;
-    JTextArea log;
+    JButton openButton, loadButton;
     JFileChooser fc;
-    JLabel label;
     public HuskyConfigurator() {
         super();
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         //Create a file chooser
         fc = new JFileChooser();
         fc.setFileFilter(new FileNameExtensionFilter("HuskyCrates Configurations (.conf)","conf"));
@@ -58,11 +50,6 @@ public class HuskyConfigurator extends JPanel implements ActionListener {
         //then the default mode (FILES_ONLY) will be used.
         //
         //fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        log = new JTextArea(5,20);
-        log.setMargin(new Insets(5,5,5,5));
-        log.setEditable(false);
-        JScrollPane logScrollPane = new JScrollPane(log);
-        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
         //Create the open button.  We use the image from the JLF
         //Graphics Repository (but we extracted it from the jar).
@@ -71,22 +58,25 @@ public class HuskyConfigurator extends JPanel implements ActionListener {
 
         //Create the save button.  We use the image from the JLF
         //Graphics Repository (but we extracted it from the jar).
-        convertButton = new JButton("Load!");
-        convertButton.addActionListener(this);
+        loadButton = new JButton("Load!");
+        loadButton.addActionListener(this);
 
-        label = new JLabel("Do NOT close this menu until you're done configuring.\nYou will lose your changes.");
-
+        JLabel label = new JLabel("Do NOT close this menu until you're done.");
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel label2 = new JLabel("If you do, you will lose your changes.");
+        label2.setHorizontalAlignment(SwingConstants.CENTER);
         JPanel warningPanel = new JPanel();
+        warningPanel.setLayout(new BoxLayout(warningPanel, BoxLayout.Y_AXIS));
         warningPanel.add(label);
+        warningPanel.add(label2);
         //For layout purposes, put the buttons in a separate panel
         JPanel buttonPanel = new JPanel(); //use FlowLayout
         buttonPanel.add(openButton);
-        buttonPanel.add(convertButton);
+        buttonPanel.add(loadButton);
 
         //Add the buttons and the log to this panel.
         add(buttonPanel, BorderLayout.BEFORE_FIRST_LINE);
-        add(warningPanel,BorderLayout.NORTH);
-        add(logScrollPane, BorderLayout.CENTER);
+        add(warningPanel, BorderLayout.CENTER);
     }
     public ConfigurationLoader<CommentedConfigurationNode> crateConfigLoader;
     //public ConfigurationLoader<CommentedConfigurationNode> crateConvertedLoader;
@@ -100,19 +90,25 @@ public class HuskyConfigurator extends JPanel implements ActionListener {
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
-                crateConfigLoader = HoconConfigurationLoader.builder().setFile(file).build();
+                /*crateConfigLoader = HoconConfigurationLoader.builder().setFile(file).build();
                 //crateConvertedLoader = HoconConfigurationLoader.builder().setFile(new File(file.getPath().replace(file.getName(),"") + "crates.converted.conf")).build();
                 try {
                     crateConfig = crateConfigLoader.load();
-                    log.setText("-- File ready --\n\n");
+                    //log.setText("-- File ready --\n\n");
                 } catch (IOException e1) {
-                    JOptionPane.showMessageDialog(null,e1.getMessage(),"Failure!",JOptionPane.PLAIN_MESSAGE);
-                }
+                    JOptionPane.showMessageDialog(null,e1.getMessage(),"Failure!",JOptionPane.ERROR_MESSAGE);
+                }*/
+                createJSONConfig(file.toPath());
             }
 
-            //Handle save button action.
-        } else if (e.getSource() == convertButton) {
-
+            //Handle load button action.
+        } else if (e.getSource() == loadButton) {
+            int input = JOptionPane.showConfirmDialog(null, "Are you sure you want to load?\n\nYou will lose ALL unsaved changes in HuskyConfigurator.");
+            if(input == 0) {
+                server.getAllClients().forEach(client -> {
+                    client.sendEvent("configData", configStr);
+                });
+            }
         }
     }
 
@@ -142,11 +138,72 @@ public class HuskyConfigurator extends JPanel implements ActionListener {
 
         //Display the window.
         frame.pack();
-        frame.setSize(400,600);
+        frame.setSize(400,200);
         frame.setResizable(false);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
     }
+
+    public static void printFailure(Exception e){
+        StringWriter str = new StringWriter();
+        PrintWriter pw = new PrintWriter(str);
+        e.printStackTrace(pw);
+
+        try {
+            BufferedWriter writer = new BufferedWriter(
+                    new FileWriter("error.log", true)  //Set true for append mode
+            );
+
+            writer.newLine();
+            writer.newLine();
+            writer.write("--- Exception generated @ "+ (new Date()).toString() + " ---");
+            writer.newLine();
+            writer.write("--- Error is below... ---");
+            writer.newLine();
+            writer.newLine();
+            writer.write(str.toString());
+            writer.newLine();
+            writer.write("--- Error is above... ---");
+            writer.newLine();
+            writer.write("--- Exception generated @ "+ (new Date()).toString() + " ---");
+            writer.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        String smallStr = str.toString().substring(0, Math.min(500,str.toString().length()));
+        if(smallStr.length() < str.toString().length()){
+            smallStr+="...";
+        }
+        JOptionPane.showMessageDialog(null,smallStr + "\n\nPlease check error.log for more information.\nFor support, go to the codeHusky Discord: https://discord.gg/FSETtcx","Failure!",JOptionPane.ERROR_MESSAGE);
+    }
+    public static void createJSONConfig(Path goal){
+        if (goal.toFile().exists()){
+            if(goal.toFile().length() > 0) {
+                HoconConfigurationLoader m_loader = HoconConfigurationLoader.builder().setHeaderMode(HeaderMode.PRESET).setPath(goal).build();
+                //loader.load();
+                JSONConfigurationLoader jsonloader = JSONConfigurationLoader.builder().build();
+                StringWriter writer = new StringWriter();
+                try {
+                    try {
+                        jsonloader.saveInternal(m_loader.load(), writer);
+                        configStr = writer.toString();
+                        System.out.println(configStr);
+                    }catch(NullPointerException e){
+                        System.out.println("Warning: Failed to turn config to JSON!");
+                        printFailure(e);
+                        configStr = "{}";
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    printFailure(e);
+                }
+                System.out.println("Loaded.");
+            }else{
+                configStr = "{}";
+            }
+        }
+    }
+    public static SocketIOServer server;
     public static void main(String[] args) throws InterruptedException {
 
         Path currentDir = Paths.get(".").toAbsolutePath().normalize();
@@ -163,32 +220,15 @@ public class HuskyConfigurator extends JPanel implements ActionListener {
             goal = Paths.get("huskycrates.conf");
             loader = HoconConfigurationLoader.builder().setHeaderMode(HeaderMode.PRESET).setPath(goal).build();
         }
-        if (goal.toFile().exists()){
-            if(goal.toFile().length() > 0) {
-                //loader.load();
-                JSONConfigurationLoader jsonloader = JSONConfigurationLoader.builder().build();
-                StringWriter writer = new StringWriter();
-                try {
-                    try {
-                        jsonloader.saveInternal(loader.load(), writer);
-                        configStr = writer.toString();
-                    }catch(NullPointerException e){
-                        System.out.println("Warning: Failed to write config to JSON!");
-                        configStr = "{}";
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
 
+        createJSONConfig(goal);
         // = HoconConfigurationLoader.builder().setPath(conf.toPath()).build();
 
         Configuration config = new Configuration();
         config.setHostname("localhost");
         config.setPort(46544);
 
-        SocketIOServer server = new SocketIOServer(config);
+        server = new SocketIOServer(config);
 
         server.addConnectListener(socketIOClient -> {
             socketIOClient.sendEvent("configData",configStr);
@@ -209,10 +249,13 @@ public class HuskyConfigurator extends JPanel implements ActionListener {
                 BufferedReader bReader = new BufferedReader(new InputStreamReader(read));
                 loader.save(JSONConfigurationLoader.builder().setHeaderMode(HeaderMode.PRESET).setSource(() -> bReader).build().load());
             }catch(Exception e){
+                printFailure(e);
                 e.printStackTrace();
+                return;
             }
             socketIOClient.sendEvent("configDataSaved");
             System.out.println("saved");
+            JOptionPane.showMessageDialog(null, "Config saved at " + new Date().toString() + ".");
         });
 
 
@@ -258,19 +301,21 @@ public class HuskyConfigurator extends JPanel implements ActionListener {
             httpServ.start();
         } catch (IOException e) {
             e.printStackTrace();
+            printFailure(e);
         }
         if (Desktop.isDesktopSupported()) {
             try {
                 Desktop.getDesktop().browse(new URI("http://localhost:46545"));
             } catch (Exception e) {
                 e.printStackTrace();
+                printFailure(e);
             }
         }else {
             try {
                 JFrameJunk.main();
-            } catch (Exception eek) {
-                eek.printStackTrace();
-
+            } catch (Exception e) {
+                e.printStackTrace();
+                printFailure(e);
             }
         }
         SwingUtilities.invokeLater(new Runnable() {
@@ -281,13 +326,6 @@ public class HuskyConfigurator extends JPanel implements ActionListener {
             }
         });
         while(live){
-            // woo
-            if(!connectionMade) {
-                if (System.currentTimeMillis() > startTime + 1000 * 10) { //10 seconds
-                    live = false;
-                    System.out.println("Connection timed out.");
-                }
-            }
             Thread.sleep(1);
         }
         System.out.println("DED");
