@@ -10,10 +10,10 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
 public class JFrameJunk {
-
+    public static JFrame frame;
     private void initAndShowGUI() {
         // This method is invoked on the EDT thread
-        JFrame frame = new JFrame("Swing and JavaFX");
+        frame = new JFrame("Swing and JavaFX");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         final JFXPanel fxPanel = new JFXPanel(){
 
