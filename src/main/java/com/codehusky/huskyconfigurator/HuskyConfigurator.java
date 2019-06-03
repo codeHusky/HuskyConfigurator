@@ -18,20 +18,135 @@ import ninja.leaping.configurate.json.JSONConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.loader.HeaderMode;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Callable;
 
-public class HuskyConfigurator {
+public class HuskyConfigurator extends JPanel implements ActionListener {
     private static boolean live = true;
     private static boolean connectionMade = false;
     private static long startTime = System.currentTimeMillis();
     private static ConfigurationLoader<CommentedConfigurationNode> loader = null;
     private static String configStr = "{}";
+    static private final String newline = "\n";
+    JButton openButton, convertButton;
+    JTextArea log;
+    JFileChooser fc;
+    JLabel label;
+    public HuskyConfigurator() {
+        super();
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        //Create a file chooser
+        fc = new JFileChooser();
+        fc.setFileFilter(new FileNameExtensionFilter("HuskyCrates Configurations (.conf)","conf"));
+
+        //Uncomment one of the following lines to try a different
+        //file selection mode.  The first allows just directories
+        //to be selected (and, at least in the Java look and feel,
+        //shown).  The second allows both files and directories
+        //to be selected.  If you leave these lines commented out,
+        //then the default mode (FILES_ONLY) will be used.
+        //
+        //fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        log = new JTextArea(5,20);
+        log.setMargin(new Insets(5,5,5,5));
+        log.setEditable(false);
+        JScrollPane logScrollPane = new JScrollPane(log);
+        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+        //Create the open button.  We use the image from the JLF
+        //Graphics Repository (but we extracted it from the jar).
+        openButton = new JButton("Open config file...");
+        openButton.addActionListener(this);
+
+        //Create the save button.  We use the image from the JLF
+        //Graphics Repository (but we extracted it from the jar).
+        convertButton = new JButton("Load!");
+        convertButton.addActionListener(this);
+
+        label = new JLabel("Do NOT close this menu until you're done configuring.\nYou will lose your changes.");
+
+        JPanel warningPanel = new JPanel();
+        warningPanel.add(label);
+        //For layout purposes, put the buttons in a separate panel
+        JPanel buttonPanel = new JPanel(); //use FlowLayout
+        buttonPanel.add(openButton);
+        buttonPanel.add(convertButton);
+
+        //Add the buttons and the log to this panel.
+        add(buttonPanel, BorderLayout.BEFORE_FIRST_LINE);
+        add(warningPanel,BorderLayout.NORTH);
+        add(logScrollPane, BorderLayout.CENTER);
+    }
+    public ConfigurationLoader<CommentedConfigurationNode> crateConfigLoader;
+    //public ConfigurationLoader<CommentedConfigurationNode> crateConvertedLoader;
+    public CommentedConfigurationNode crateConfig;
+    public CommentedConfigurationNode convertedCrateConfig;
+    public void actionPerformed(ActionEvent e) {
+
+        //Handle open button action.
+        if (e.getSource() == openButton) {
+            int returnVal = fc.showOpenDialog(HuskyConfigurator.this);
+
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                crateConfigLoader = HoconConfigurationLoader.builder().setFile(file).build();
+                //crateConvertedLoader = HoconConfigurationLoader.builder().setFile(new File(file.getPath().replace(file.getName(),"") + "crates.converted.conf")).build();
+                try {
+                    crateConfig = crateConfigLoader.load();
+                    log.setText("-- File ready --\n\n");
+                } catch (IOException e1) {
+                    JOptionPane.showMessageDialog(null,e1.getMessage(),"Failure!",JOptionPane.PLAIN_MESSAGE);
+                }
+            }
+
+            //Handle save button action.
+        } else if (e.getSource() == convertButton) {
+
+        }
+    }
+
+    /** Returns an ImageIcon, or null if the path was invalid. */
+    protected static ImageIcon createImageIcon(String path) {
+        java.net.URL imgURL = HuskyConfigurator.class.getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL);
+        } else {
+            System.err.println("Couldn't find file: " + path);
+            return null;
+        }
+    }
+
+    /**
+     * Create the GUI and show it.  For thread safety,
+     * this method should be invoked from the
+     * event dispatch thread.
+     */
+    private static void createAndShowGUI() {
+        //Create and set up the window.
+        JFrame frame = new JFrame("HuskyConfigurator Backend");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //Add content to the window.
+        frame.add(new HuskyConfigurator());
+
+        //Display the window.
+        frame.pack();
+        frame.setSize(400,600);
+        frame.setResizable(false);
+        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
+    }
     public static void main(String[] args) throws InterruptedException {
 
         Path currentDir = Paths.get(".").toAbsolutePath().normalize();
@@ -158,7 +273,13 @@ public class HuskyConfigurator {
 
             }
         }
-
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                //Turn off metal's use of bold fonts
+                UIManager.put("swing.boldMetal", Boolean.FALSE);
+                createAndShowGUI();
+            }
+        });
         while(live){
             // woo
             if(!connectionMade) {

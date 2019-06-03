@@ -33,7 +33,7 @@ socket.on("configDataSaved",function(){
 var currentCrate = null;
 var currentPage = "crateOverview";
 var pages = ["crateOverview","crateItems","crateOptions","crateSpinnerOptions","crateLang","globalLang"];
-$("#crates").change(function() {
+$("#crate").change(function() {
     triggerCrate($(this).val());
 })
 $("#newCrate").click(function() {
@@ -244,12 +244,12 @@ function updateUI() {
     }else{
         $("#crateSpinnerOptions-button").removeClass("disabled");
     }
-    $("#crates").show();
-    $("#crates").html("");
+    $("#crate").show();
+    $("#crate").html("");
     
     for(crate in config.crates){
-        //$("#crates").append('<li class="nav-item"> <a class="nav-link ' + ((crate == currentCrate)?'active':'') + '" id="' + crate + '-button" href="javascript:triggerCrate(\'' + crate + '\')">' + colorCodeStrip(config.crates[crate].name) + '</a></li>')
-        $("#crates").append('<option ' + ((currentCrate == crate)?"selected":"") + ' value="' + crate + '">' + colorCodeStrip(config.crates[crate].name) + " (" + crate + ")</option>")
+        //$("#crate").append('<li class="nav-item"> <a class="nav-link ' + ((crate == currentCrate)?'active':'') + '" id="' + crate + '-button" href="javascript:triggerCrate(\'' + crate + '\')">' + colorCodeStrip(config.crate[crate].name) + '</a></li>')
+        $("#crate").append('<option ' + ((currentCrate == crate)?"selected":"") + ' value="' + crate + '">' + colorCodeStrip(config.crates[crate].name) + " (" + crate + ")</option>")
     }
     hidePages();
     if(!currentCrate) return;
@@ -350,7 +350,7 @@ function updateUI() {
                     })
                     $("#" + meta).off("click").click(function(){
                         var id = parseFloat(this.id.split("-")[1]);
-                        //config.crates[currentCrate].items.splice(id,1);
+                        //config.crate[currentCrate].items.splice(id,1);
                         updateUI();
                     })
                     $("#" + weight).off("change").change(function() {
@@ -360,7 +360,7 @@ function updateUI() {
                     })
                     $("#" + rewards).off("click").click(function(){
                         var id = parseFloat(this.id.split("-")[1]);
-                        //config.crates[currentCrate].items.splice(id,1);
+                        //config.crate[currentCrate].items.splice(id,1);
                         updateUI();
                     })
                 }
