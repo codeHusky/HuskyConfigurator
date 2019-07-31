@@ -226,7 +226,7 @@ public class HuskyConfigurator extends JPanel implements ActionListener {
 
         Configuration config = new Configuration();
         config.setHostname("localhost");
-        config.setPort(46544);
+        config.setPort(args.length == 0 || args[0].replaceAll("[^0-9]", "").isEmpty() ? 46544 : Integer.parseInt(args[0].replaceAll("[^0-9]", "")));
 
         server = new SocketIOServer(config);
 
